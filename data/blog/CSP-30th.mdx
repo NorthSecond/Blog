@@ -1,0 +1,323 @@
+---
+title:  "晚节不保，警钟长鸣"
+date:   2023-05-29 9:00:00 +0800
+summary: 第 30 次 CCF CSP 认证总结和答案备份。
+tags: [codes, Algorithm]
+---
+
+## 写在前面
+
+昨天在东校折腾了一天参加了这次的 CSP，说着刷个 300+ 就退役。前天晚上多特拉的人气不打一出来，一晚上没怎么睡，本来想着要寄结果最后真就刚好 300 ……
+
+但是最后看题，应该还是能做到更好的，后面两道题最后骗分的手段有点拙劣， 属于是晚结不保了。比赛结束之后群里看了看 Rank，意外发现这次题还是蛮难的，加上参与的人差不多只有上次的一半多，看来整个高 Rank 还是有点戏的。
+
+当然吃完饭发现器官车和到唐家湾站的城轨都没票了，只能折腾明珠站，下来坐了一个多小时公交，中山大学东站下车还没有共享骑，警钟长鸣！
+
+## 题目观感
+
+作为一个非竞赛生是没有资格锐评题目的（bushi，由于现在答卷代码还不能下载+最终rank还没有出来，就只先泛谈一下题目的观感吧。
+
+1. A 题照例比较简单，读完题就直接 `unordered_map` 秒了；
+2. B 题很罕见地 1e9 的复杂度没 T ，设计的是一个 MLE 的测试点，这是个不错的引导（毕竟很多人都不带脑子开大数组，这次就玩个够大的整个活），看 [lanly 的题解](https://www.cnblogs.com/lanly/p/17438739.html)可以通过矩阵乘法的交换把数组维度降到 $d\times d$，我是直接行扫描计算压缩到到 $n$，但是可能是我写的太菜了被卡了一下常，`vector` 换成经典数组就过了；
+3. C 应该是这几次里面最抽象的一个大模拟了吧……看见整整 6 页 A4 的题我整个人都不好了，输入输出还是一堆 16 进制的数，自己造样例都造不下去……不过还好做起来思路还是比较顺的，写的过程中多加几个 `debug` 和 `assert` 也就还好了。
+4. D 题我是傻逼，骗分的时候 `char` 和 `string` 不分，浪费了半小时时间不说还自己送了 20 分出去；
+    + 2023/06/02 更新：我更傻逼了，发现其实是能骗到分的，但是交到E题上去了……我的Top 1%啊啊啊啊啊啊啊啊啊啊啊啊啊啊
+    ![zip](/img/post_pics/2306020001.png)
+5. E 看着像是变形的 dijkstra? 但是连用 DFS 骗分的时间都没有了。
+
+其他的等结果和答卷代码拿到手再说吧。
+
+---
+
+> 2023.06.02: 答卷答案拿到了，来备份一手
+
+## 答案备份
+
+### A [重复局面](http://118.190.20.162/view.page?gpid=T170)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef unsigned int usint;
+
+#define fre(x, i) for(i = 0; i < x; ++i)
+
+
+#define frp(i, a, b) for(i = a; i < b; ++i)
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    unordered_map<string, int> mp;
+    usint n, i;
+    cin >> n;
+    while(n--) {
+        string status;
+        string tmp;
+        fre(8, i) {
+            cin >> tmp;
+            status += tmp;
+        }
+        cout << ++mp[status] << endl;
+        status = "";
+    }
+    return 0;
+}
+
+```
+
+### B [矩阵运算](http://118.190.20.162/view.page?gpid=T169)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef unsigned int usint;
+
+#define fre(x, i) for(i = 0; i < x; ++i)
+
+
+#define frp(i, a, b) for(i = a; i < b; ++i)
+
+ll q[100001][21], k[100001][21], v[100001][21], ans[100001][21];
+ll t1[100001], w[100001];
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    usint n, d, i, j, m;
+    cin >> n >> d;
+    // vector<vector<ll> > q(n, vector<ll> (d, 0));
+    // vector<vector<ll> > k(n, vector<ll> (d, 0));
+    // vector<vector<ll> > v(n, vector<ll> (d, 0));
+    // vector<vector<ll> > ans(n, vector<ll> (d, 0));
+    // vector<ll> t1(n);
+    // vector<ll> w(n);
+    fre(n, i) {
+        fre(d, j) {
+            cin >> q[i][j];
+        }
+    }
+    fre(n, i) {
+        fre(d, j) {
+            cin >> k[i][j];
+        }
+    }    
+    fre(n, i) {
+        fre(d, j) {
+            cin >> v[i][j];
+        }
+    }
+    fre(n, i) {
+        cin >> w[i];
+    }
+
+    fre(n, i) {
+        fre(n, j) {
+            t1[j] = 0;
+            fre(d, m) {
+                t1[j] += q[i][m] * k[j][m];
+            }
+            t1[j] *= w[i];
+        }
+        fre(d, j) {
+            ans[i][j] = 0;
+            fre(n, m) {
+                ans[i][j] += t1[m] * v[m][j];
+            }
+        }
+    }
+
+    fre(n, i) {
+        fre(d, j) {
+            cout << ans[i][j] << ' ';
+        }
+        cout << endl;
+    }
+    return 0;
+}
+
+```
+
+### C [解压缩](http://118.190.20.162/view.page?gpid=T168)
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef unsigned int usint;
+
+#define fre(x, i) for(i = 0; i < x; ++i)
+
+
+#define frp(i, a, b) for(i = a; i < b; ++i)
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    string origin = "";
+    string ans = "";
+    string line, tmp;
+
+    usint s, i, j, k, lines;
+    cin >> s;
+    
+    lines = s / 8;
+    if(s % 8) {
+        lines++;
+    }
+    fre(lines, i){
+        cin >> line;
+        origin += line;
+    }
+
+    // suoyin
+    stack<usint> len_vs;
+    usint index = 0;
+    string ops = origin.substr(index, 2);
+    usint op = strtoul(ops.c_str(), NULL, 16);
+
+    while(op > 127) {
+        len_vs.push(op - 128);
+        index += 2;
+        ops = origin.substr(index, 2);
+        op = strtoul(ops.c_str(), NULL, 16);
+    }
+    len_vs.push(op);
+    index += 2;
+
+    // datas
+    while(index < 2 * s) {
+        ops = origin.substr(index, 2);
+        op = strtoul(ops.c_str(), NULL, 16);
+        index += 2;
+        unsigned opv = op % 4;
+        if(opv == 0) {
+            usint l = op / 4;
+            if (l<60){
+                // l = l + 1
+                ++l;
+            } else if(l == 60){
+                // 1 byte
+                tmp = origin.substr(index, 2);
+                l = strtoul(tmp.c_str(), NULL, 16) + 1;
+                index += 2;
+            } else if (l == 61) {
+                // 2 byte
+                tmp = "";
+                tmp += origin[index + 2];
+                tmp += origin[index + 3];
+                tmp += origin[index];
+                tmp += origin[index + 1];
+                l = strtoul(tmp.c_str(), NULL, 16) + 1;
+                index += 4;
+            } else if (l == 62) {
+                // 3 byte
+                tmp = "";
+                tmp += origin[index + 4];
+                tmp += origin[index + 5];
+                tmp += origin[index + 2];
+                tmp += origin[index + 3];
+                tmp += origin[index];
+                tmp += origin[index + 1];
+                l = strtoul(tmp.c_str(), NULL, 16) + 1;
+                index += 6;
+            } else if(l == 63) {
+                // 4 byte
+                tmp = "";
+                tmp += origin[index + 6];
+                tmp += origin[index + 7];
+                tmp += origin[index + 4];
+                tmp += origin[index + 5];
+                tmp += origin[index + 2];
+                tmp += origin[index + 3];
+                tmp += origin[index];
+                tmp += origin[index + 1];
+                l = strtoul(tmp.c_str(), NULL, 16) + 1;
+                index += 8;
+            }
+            ans += origin.substr(index, l * 2);
+            index += 2 * l;
+        } else if(opv == 1) {
+            size_t oh3 = op / 32;
+            size_t l = op % 32;
+            l /= 4;
+            l += 4;
+            tmp = origin.substr(index, 2);
+            size_t ol = strtoul(tmp.c_str(), NULL, 16);
+            index += 2;
+            size_t o = oh3 * 256 + ol;
+
+            // Repeat<o, l>
+            usint now_ans_size = ans.length();
+            // debug("1: Now ans size = %lu\n o = %u, l = %u\n", now_ans_size, o, l);
+            if(l <= o) {
+                ans += ans.substr(now_ans_size - o * 2, l * 2);
+            } else {
+                usint repeat_times = l / o;
+                tmp = ans.substr(now_ans_size - o * 2, o * 2);
+                fre(repeat_times, i) {
+                    ans += tmp;
+                }
+                if(l % o) {
+                    ans += tmp.substr(0, (l % o) * 2);
+                }
+            }
+        } else if(opv == 2) {
+            size_t l = op / 4 + 1;
+            tmp = "";
+            tmp += origin[index + 2];
+            tmp += origin[index + 3];
+            tmp += origin[index];
+            tmp += origin[index + 1];
+            size_t o = strtoul(tmp.c_str(), NULL, 16);
+            index += 4;
+            // Repeat<o, l>
+            
+            usint now_ans_size = ans.length();
+            // debug("2: Now ans size = %lu\n o = %u, l = %u\n", now_ans_size, o, l);
+
+            if(l <= o) {
+                ans += ans.substr(now_ans_size - o * 2, l * 2);
+            } else {
+                usint repeat_times = l / o;
+                tmp = ans.substr(now_ans_size - o * 2, o * 2);
+                fre(repeat_times, i) {
+                    ans += tmp;
+                }
+                if(l % o) {
+                    ans += tmp.substr(0, (l % o) * 2);
+                }
+            }
+        } else {
+            // ERROR
+            puts("ERROR");
+            assert(true);
+        }
+
+    }    
+
+    // print ans
+    usint now_ans_size = ans.length();
+    fre(now_ans_size, i) {
+        if(i && i % 16 == 0) {
+            cout << '\n';
+        }
+        cout << ans[i];
+    }
+    cout << '\n';
+    return 0;
+}
+
+```

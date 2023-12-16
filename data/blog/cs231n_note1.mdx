@@ -1,0 +1,273 @@
+---
+title:  "CS231n笔记-第一部分"
+date: '2022-08-05 19:25:00 +0800'
+tags: [CS231n, Deep Learning, Notes]
+summary: "图像分类。数据驱动的方法，k-NN，训练/评估/测试分割"
+---
+
+[TOC]
+
+## 图像分类任务简介
+
+### 图像分类简述
+
+图像分类问题，就是已有固定的分类标签集合，然后对于输入的图像，从分类标签集合中找出一个分类标签，最后把分类标签分配给该输入图像。**图像分类是计算机视觉的核心问题之一**。
+
+_例子:_ 在下图中，图像分类模型采用单个图像并将概率分配给 4 个标签 `{cat, dog, hat, mug}`。如图所示，请记住，对于计算机而言，图像表示为一个大型 3 维数字数组。在本例中，猫的图像宽 248 像素，高 400 像素，具有红色、绿色、蓝色（或简称 RGB）三个颜色通道。因此，图像由 248 x 400 x 3 个数字组成，或总共 297,600 个数字。每个数字都是一个整数，范围从 0（黑色）到 255（白色）。我们的任务是将这 25 万个数字变成一个标签，例如 *“cat”* 。
+
+![](https://cs231n.github.io/assets/classify.png)
+
+### 图像分类的难点
+
+* **Semantic Gap**（语义鸿沟）：人们在判别 图像 的相似性时并非建立在图像低层视觉特征的相似上，而是建立在对图像所描述的对象或事件的语义理解的基础上。但显然计算机做不到这一点。
+* Viewpoint variation （视角变化）
+* Scale variation（尺度变化）：视觉类经常表现出它们的大小变化（现实世界中的大小，不仅仅是它们在图像中的范围）。
+* Illumination condition（光照条件变化）
+* Background Clutter （背景的影响）：前景和后景，都会有影响，前景更侧重于下一条 Occasion。
+* Occlusion（遮挡）
+* Deformation（变形）：很多对象不是刚体，刚体几乎不用考虑这一点。
+* Intraclass variation（类间差异）：一个 label 只代表有共同点，不代表内部完全是一模一样的个体。
+
+> A good image classification model must be invariant to the cross product of all these variations, while simultaneously retaining sensitivity to  the inter-class variations.
+
+### 数据驱动的方法（Data-driven approach）
+
+提供给模型训练集，模型按照训练集进行训练的驱动方法。其依赖于累积*训练数据集*标记的图像。此类数据集的示例：
+
+![](https://cs231n.github.io/assets/trainset.jpg)
+
+
+
+### 图像分类管道（The image classification pipeline）
+
+我们将图像分类任务的流程形式化如下：
+
+1. 输入（Input）：输入是包含N个图像的集合，每个图像的标签是K种分类标签中的一种。这个集合称为*训练集。*
+2. 学习（Learning）：这一步的任务是使用训练集来学习每个类到底长什么样。一般该步骤叫做*训练分类器*或者*学习一个模型*。
+3. 评估（Evaluation）：让分类器来预测它未曾见过的图像的分类标签，并以此来评价分类器的质量。我们会把分类器预测的标签和图像真正的分类标签对比。毫无疑问，分类器预测的分类标签和图像真正的分类标签如果一致，那就是好事，这样的情况越多越好。
+
+
+
+## 最邻近分类（Nearest Neighbor Classifier）
+
+### 最邻近分类的引入
+
+最邻近分类器和卷积神经网络无关，在实践中也没有使用，这里只是做以引入。
+
+使用的数据集：一种流行的玩具图像分类数据集 [CIFAR-10 数据集](https://www.cs.toronto.edu/~kriz/cifar.html)。这个数据集包含了 60000 张 $32\times 32$ Pixels 的小图像。每张图像都有10种分类标签(例如 *“airplane, automobile, bird, etc”*).中的一种。这60000张图像被分为包含50000张图像的训练集和包含10000张图像的测试集。在下图中你可以看见10个类的10张随机图片。
+
+![](https://cs231n.github.io/assets/nn.jpg)
+
+---
+
+假设现在我们有CIFAR-10的50000张图片（每种分类5000张）作为训练集，我们希望将余下的10000作为测试集并给他们打上标签。Nearest  Neighbor算法将会拿着测试图片和训练集中每一张图片去比较，然后将它认为最相似的那个训练集图片的标签赋给这张测试图片。上面右边的图片就展示了这样的结果。请注意上面10个分类中，只有3个是准确的。比如第8行中，马头被分类为一个红色的跑车，原因在于红色跑车的黑色背景非常强烈，所以这匹马就被错误分类为跑车了。
+
+那么具体如何比较两张图片呢？在本例中，就是比较 $32\times 32\times 3$ 的像素块。最简单的方法就是逐个像素比较，最后将差异值全部加起来。换句话说，就是将两张图片先转化为两个向量 $I_1$ 和 $I_2$ ，然后计算他们的**L1 距离：**
+
+$$
+d_1(I_1,I2)=\sum_p\lvert I_1^p - I_2^p \rvert
+$$
+
+$p$ 指的就是图像中的所有像素。
+
+---
+
+下面是整个比较流程的图例，以图片中的一个颜色通道为例来进行说明。两张图片使用L1距离来进行比较。逐个像素求差值，然后将所有差值加起来得到一个数值。如果两张图片一模一样，那么L1距离为0，但是如果两张图片很是不同，那L1值将会非常大。
+
+![](https://cs231n.github.io/assets/nneg.jpeg)
+
+---
+
+**分类器的实现方法：**
+
+首先，我们将CIFAR-10的数据加载到内存中，并分成4个数组：训练数据和标签，测试数据和标签。在下面的代码中，**Xtr**（大小是50000x32x32x3）存有训练集中所有的图像，**Ytr**是对应的长度为50000的1维数组，存有图像对应的分类标签（从0到9）：
+
+```python
+Xtr, Ytr, Xte, Yte = load_CIFAR10('data/cifar10/') # a magic function we provide  
+# flatten out all images to be one-dimensional  
+Xtr_rows = Xtr.reshape(Xtr.shape[0], 32 * 32 * 3) # Xtr_rows becomes 50000 x 3072  
+Xte_rows = Xte.reshape(Xte.shape[0], 32 * 32 * 3) # Xte_rows becomes 10000 x 3072  
+```
+
+现在我们得到所有的图像数据，并且把他们拉长成为行向量了。接下来展示如何训练并评价一个分类器：
+
+```python
+nn = NearestNeighbor() # create a Nearest Neighbor classifier class  
+nn.train(Xtr_rows, Ytr) # train the classifier on the training images and labels  
+Yte_predict = nn.predict(Xte_rows) # predict labels on the test images  
+# and now print the classification accuracy, which is the average number  
+# of examples that are correctly predicted (i.e. label matches)  
+print 'accuracy: %f' % ( np.mean(Yte_predict == Yte) )  
+```
+
+作为评价标准，我们常常使用**查准率**，用以衡量正确预测的比例。请注意以后我们实现的所有分类器都需要有这个API：`train(X,y)` 函数。该函数使用训练集的数据和标签来进行训练。从其内部来看，类应该实现一些关于标签和标签如何被预测的模型。这里还有个`predict(X)`函数，它的作用是预测输入的新数据的分类标签。下面介绍最邻近分类器的实现：
+
+```python
+import numpy as np  
+  
+class NearestNeighbor(object):  
+  def __init__(self):  
+    pass  
+  
+  def train(self, X, y):  
+    """ X is N x D where each row is an example. Y is 1-dimension of size N """  
+    # the nearest neighbor classifier simply remembers all the training data  
+    self.Xtr = X  
+    self.ytr = y  
+  
+  def predict(self, X):  
+    """ X is N x D where each row is an example we wish to predict label for """  
+    num_test = X.shape[0]  
+    # lets make sure that the output type matches the input type  
+    Ypred = np.zeros(num_test, dtype = self.ytr.dtype)  
+  
+    # loop over all test rows  
+    for i in xrange(num_test):  
+      # find the nearest training image to the i'th test image  
+      # using the L1 distance (sum of absolute value differences)  
+      distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)  
+      min_index = np.argmin(distances) # get the index with smallest distance  
+      Ypred[i] = self.ytr[min_index] # predict the label of the nearest example  
+  
+    return Ypred  
+```
+
+如果你运行这段代码，你会看到这个分类器在 CIFAR-10 上只达到了**38.6% 。**这个准确率比随机猜测高一点（因为有 10 个类别，准确率大约为 10%），但远不及人类的表现（[估计约为 94%](https://karpathy.github.io/2011/04/27/manually-classifying-cifar10/)）或接近最先进的卷积神经网络（大约95%），与人类准确度相匹配（参见最近在 CIFAR-10 上的 Kaggle 竞赛[排行榜](https://www.kaggle.com/c/cifar-10/leaderboard))。
+
+### 距离计算方法的选择
+
+课程中介绍了L1距离和L2距离。L1距离在上面已经提到了，L2距离也就是欧氏距离，计算方式如下：
+
+$$
+d_2(I_1,I_2) = \sqrt{\sum_p (I_1^p-I_2^p)^2}
+$$
+
+换句话说，我们依旧是在计算像素间的差值，只是先求其平方，然后把这些平方全部加起来，最后对这个和开方。对于上面的例子，我们只需要替换一行代码即可：
+
+```python
+distances = np.sqrt(np.sum(np.square(self.Xtr - X[i,:]), axis = 1))
+```
+
+注意在这里使用了`np.sqrt()`，在实际中可能不用。因为求平方根函数是一个*单调函数*，它对不同距离的绝对值求平方根虽然改变了数值大小，但依然保持了不同距离大小的顺序。所以用不用它，都能够对像素差异的大小进行正确比较。如果你在 CIFAR-10 上面跑这个模型，正确率是**35.4%**，比刚才低了一点。
+
+**L1和L2比较**。比较这两个度量方式是挺有意思的。在面对两个向量之间的差异时，L2比L1更加不能容忍这些差异。也就是说，相对于两个向量中单个元素之间巨大的差异，L2距离更倾向于接受多个元素之间中等程度的差异。L1和L2（或者他们在一对图像中等效的差异）都是在[p-norm](https://planetmath.org/vectorpnorm)常用的特殊形式。
+
+### k - 最近邻分类器（KNN/k - Nearest Neighbor Classifier）
+
+我们已经注意到的是，只使用最近似的一张照片作为测试图像的标签是一件非常奇怪的事情，为了避免训练集中噪声的影响和提高识别精确度，**k-Nearest Neighbor分类器**能做得更好。它的思想很简单：我们找最相似的k个图片的标签，然后让他们针对测试图片进行投票，最后把票数最高的标签作为对测试图片的预测。所以当k=1的时候，k-Nearest Neighbor分类器 就是Nearest  Neighbor分类器。从直观感受上就可以看到，更高的k值可以让分类的效果更平滑，使得分类器对于异常值更有抵抗力。
+
+![](https://cs231n.github.io/assets/knn.jpeg)
+
+这张图片展示了Nearest Neighbor分类器和5-Nearest Neighbor分类器的区别。例子使用了2维的点来表示，分成3类（红、蓝和绿）。不同颜色区域代表的是使用L2距离的分类器的**决策边界**。白色的区域是分类模糊的例子（即图像与两个以上的分类标签绑定）。需要注意的是，在NN分类器中，异常的数据点（比如：在蓝色区域中的绿点）制造出一个不正确预测的孤岛。5-NN分类器将这些不规则都平滑了，使得它针对测试数据的**泛化（generalization）**能力更好（例子中未展示）。注意，5-NN中也存在一些灰色区域，这些区域是因为近邻标签的最高票数相同导致的（比如：2个邻居是红色，2个邻居是蓝色，还有1个是绿色）。
+
+在实际中，大多使用k-NN分类器。但是k值如何确定呢？接下来就讨论这个问题。
+
+## 用于超参数调优的验证集
+
+kNN分类器需要设定k值，那么选择哪个k值最合适的呢？我们可以选择不同的距离函数，比如L1和L2距离等，那么选哪个好？还有不少选择我们甚至连考虑都没有考虑到（比如：点积）。所有这些选择，被称为**超参数（hyperparameter）**。在基于数据进行学习的机器学习算法设计中，超参数是很常见的。一般说来，这些超参数具体怎么设置或取值并不是显而易见的。
+
+你可能会建议尝试不同的值，看哪个值表现最好就选哪个。实际工作中我们就是这么做的，但这样做的时候要非常细心。特别注意：**决不能使用测试集来进行调优**。当你在设计机器学习算法的时候，应该把测试集看做非常珍贵的资源，不到最后一步，绝不使用它。如果你使用测试集来调优，而且算法看起来效果不错，那么真正的危险在于：算法实际部署后，性能可能会远低于预期。这种情况，称之为算法对测试集**过拟合**。从另一个角度来说，如果使用测试集来调优，实际上就是把测试集当做训练集，由测试集训练出来的算法再跑测试集，自然性能看起来会很好。这其实是过于乐观了，实际部署起来效果就会差很多。所以，最终测试的时候再使用测试集，可以很好地近似度量你所设计的分类器的泛化性能（在接下来的课程中会有很多关于泛化性能的讨论）。
+
+> Evaluate on the test set only a single time, at the very end.
+
+**验证集**是用来调优超参数的数据集合，包括在广义的测试集中。以CIFAR-10为例，我们可以用49000个图像作为训练集，用1000个图像作为验证集。验证集其实就是作为假的测试集来调优。下面就是代码：
+
+```python
+# assume we have Xtr_rows, Ytr, Xte_rows, Yte as before  
+# recall Xtr_rows is 50,000 x 3072 matrix  
+Xval_rows = Xtr_rows[:1000, :] # take first 1000 for validation  
+Yval = Ytr[:1000]  
+Xtr_rows = Xtr_rows[1000:, :] # keep last 49,000 for train  
+Ytr = Ytr[1000:]  
+  
+# find hyperparameters that work best on the validation set  
+validation_accuracies = []  
+for k in [1, 3, 5, 10, 20, 50, 100]:  
+  
+  # use a particular value of k and evaluation on validation data  
+  nn = NearestNeighbor()  
+  nn.train(Xtr_rows, Ytr)  
+  # here we assume a modified NearestNeighbor class that can take a k as input  
+  Yval_predict = nn.predict(Xval_rows, k = k)  
+  acc = np.mean(Yval_predict == Yval)  
+  print 'accuracy: %f' % (acc,)  
+  
+  # keep track of what works on the validation set  
+  validation_accuracies.append((k, acc))  
+```
+
+程序结束后，我们会作图分析出哪个k值表现最好，然后用这个k值来跑真正的测试集，并作出对算法的评价。
+
+> Split your training set into training set and a validation set. Use  validation set to tune all hyperparameters. At the end run a single time on the test set and report performance.
+
+**交叉验证**。有时候，训练集数量较小（因此验证集的数量更小），人们会使用一种被称为**交叉验证**的方法，这种方法更加复杂些。还是用刚才的例子，如果是交叉验证集，我们就不是取1000个图像，而是将训练集平均分成5份，其中4份用来训练，1份用来验证。然后我们循环着取其中4份来训练，其中1份来验证，最后取所有5次验证结果的平均值作为算法验证结果。
+
+---
+
+下面是一个典型的分析图片：
+
+![](https://cs231n.github.io/assets/cvplot.png)
+
+这就是5份交叉验证对k值调优的例子。针对每个k值，得到5个准确率结果，取其平均值，然后对不同k值的平均表现画线连接。本例中，当k=7的时算法表现最好（对应图中的准确率峰值）。如果我们将训练集分成更多份数，直线一般会更加平滑（噪音更少）。
+
+---
+
+**实际应用**。在实际情况下，人们更喜欢避免交叉验证，主要是因为它会耗费较多的计算资源。人们倾向于拆分 50%-90% 的训练数据用于训练，其余用于验证。但这也是根据具体情况来定的：如果超参数数量多，你可能就想用更大的验证集，而验证集的数量不够（也许只有几百个），那么交叉验证还是更加安全。在实践中可以看到的典型折叠数是 3 、5 或 10 折交叉验证。
+
+## 最近邻分类器的优缺点
+
+Nearest Neighbor分类器有一定的优势，但是同时也有不可弥补的劣势。
+
+首先，Nearest  Neighbor分类器易于理解，实现简单。其次，算法的训练不需要花时间，因为其训练过程只是将训练集数据存储起来。然而测试要花费大量时间计算（一般为$O(n)$），因为每个测试图像需要和所有存储的训练图像进行比较，这显然是一个缺点。在实际应用中，我们关注测试效率远远高于训练效率。其实，我们后续要学习的卷积神经网络在这个权衡上走到了另一个极端：虽然训练花费很多时间，但是一旦训练完成，对新的测试数据进行分类非常快。这样的模式就符合实际使用需求。
+
+Nearest Neighbor分类器的计算复杂度研究是一个活跃的研究领域，若干**Approximate Nearest Neighbor (ANN)**算法和库的使用可以提升Nearest Neighbor分类器在数据上的计算速度（比如：[FLANN](https://www.cs.ubc.ca/research/flann/)）。这些算法可以在准确率和时空复杂度之间进行权衡，并通常依赖一个预处理/索引过程，这个过程中一般包含 kd 树的创建和k-means算法的运用。
+
+Nearest  Neighbor 分类器在某些特定情况（比如数据维度较低）下，可能是不错的选择。但是在实际的图像分类工作中，很少使用。因为图像都是高维度数据（他们通常包含很多像素），而高维度向量之间的距离通常是反直觉的。下面的图片展示了基于像素的相似和基于感官的相似是有很大不同的，下面是一个例子：
+
+---
+
+![](https://cs231n.github.io/assets/samenorm.png)
+
+在高维度数据上，基于像素的的距离和感官上的非常不同。上图中，右边3张图片和左边第1张原始图片的L2距离是一样的。很显然，基于像素比较的相似和感官上以及语义上的相似是不同的。
+
+---
+
+还有一个可视的证据证明仅仅使用像素差异来比较图像是远远不够的。我们可以使用一种称为[t-SNE](https://lvdmaaten.github.io/tsne/)的可视化技术来获取 CIFAR-10 图像并将它们嵌入到二维中，以便最好地保留它们的（局部）成对距离。在这个可视化中，根据我们上面开发的 L2 像素距离，附近显示的图像被认为非常接近：
+
+![](https://cs231n.github.io/assets/pixels_embed_cifar10.jpg)
+
+使用 t-SNE 嵌入二维的 CIFAR-10 图像。基于 L2 像素距离，该图像上附近的图像被认为是接近的。注意背景的强烈影响而不是语义类别差异。单击[此处](https://cs231n.github.io/assets/pixels_embed_cifar10_big.jpg)查看此可视化的更大版本。 
+
+在图像中我们注意到，这些图片的排布更像是一种颜色分布函数，或者说是基于背景的，而不是图片的语义主体。比如，狗的图片可能和青蛙的图片非常接近，这是因为两张图片都是白色背景。从理想效果上来说，我们肯定是希望同类的图片能够聚集在一起，而不被背景或其他不相关因素干扰。所以我们需要更多更新的算法来解决这些问题。
+
+## 小结
+
+在本节中，我们做了以下工作：
+
+* 我们介绍了**图像分类**问题。在该问题中，给出一个由被标注了分类标签的图像组成的集合，要求算法能预测没有标签的图像的分类标签，并根据算法预测准确率进行评价。
+* 介绍了一个简单的图像分类器：**最近邻分类器(Nearest Neighbor classifier)**。分类器中存在不同的超参数(比如k值或距离类型的选取)，要想选取好的超参数不是一件轻而易举的事。
+* 选取超参数的正确方法是：将原始训练集分为训练集和**验证集**，我们在验证集上尝试不同的超参数，最后保留表现最好那个。
+* 如果训练数据量不够，使用**交叉验证**方法，它能帮助我们在选取最优超参数的时候减少噪音。
+* 一旦找到最优的超参数，就让算法以该参数在测试集跑且只跑一次，并根据测试结果评价算法。
+* 最近邻分类器能够在CIFAR-10上得到将近40%的准确率（K-NN）。该算法简单易实现，但需要存储所有训练数据，并且在测试的时候过于耗费计算能力。
+* 最后，我们知道了仅仅使用L1和L2范数来进行像素比较是不够的，图像更多的是按照背景和颜色被分类，而不是语义主体分身，也就是所谓的**语义鸿沟**。
+
+在接下来的课程中，我们将专注于解决这些问题和挑战，并最终能够得到超过90%准确率的解决方案。该方案能够在完成学习就丢掉训练集，并在一毫秒之内就完成一张图片的分类。
+
+## Summary：实际使用 k-NN
+
+如果你希望将k-NN分类器用到实处（最好别用到图像上，除非仅仅只是练手），那么可以按照以下流程：
+
+1. 数据预处理：对你数据中的特征进行归一化（normalize），让其具有零平均值（zero mean）和单位方差（unit  variance）。在后面的小节我们会讨论这些细节。本小节不讨论，是因为图像中的像素都是同质的，不会表现出较大的差异分布，也就不需要标准化处理了。
+2. 降维：如果数据是高维数据，考虑使用降维方法，比如PCA([wiki ref](https://en.wikipedia.org/wiki/Principal_component_analysis), [CS229ref](https://cs229.stanford.edu/notes/cs229-notes10.pdf), [blog ref](https://www.bigdataexaminer.com/understanding-dimensionality-reduction-principal-component-analysis-and-singular-value-decomposition/))或[随机投影](https://scikit-learn.org/stable/modules/random_projection.html)。
+3. 训练数据的划分：将数据随机分入训练集和验证集。按照一般规律，70%-90%  数据作为训练集。这个比例根据算法中有多少超参数，以及这些超参数对于算法的预期影响来决定。如果需要预测的超参数很多，那么就应该使用更大的验证集来有效地估计它们。如果担心验证集数量不够，那么就尝试交叉验证方法。如果计算资源足够，使用交叉验证总是更加安全的（份数越多，效果越好，也更耗费计算资源）。
+4. 超参数的调整：在验证集上调优，尝试足够多的k值，尝试L1和L2两种范数计算方式。
+5. 如果分类器跑得太慢，尝试使用Approximate Nearest Neighbor库（比如[FLANN](https://www.cs.ubc.ca/research/flann/)）来加速这个过程，其代价是降低一些准确率。
+6. 记录最优超参数：记录最优参数后，是否应该让使用最优参数的算法在完整的训练集上运行并再次训练呢？因为如果把验证集重新放回到训练集中（自然训练集的数据量就又变大了），有可能最优参数又会有所变化。在实践中，**不要这样做**。千万不要在最终的分类器中使用验证集数据，这样做会破坏对于最优参数的估计。**直接使用测试集来测试用最优参数设置好的最优模型**，得到测试集数据的分类准确率，并以此作为你的k-NN分类器在该数据上的性能表现。
+
+## 扩展阅读
+
+下面是一些你可能感兴趣的拓展阅读链接：
+
+* [A Few Useful Things to Know about Machine Learning](https://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf)，文中第6节与本节相关，但是整篇文章都强烈推荐。
+* [Recognizing and Learning Object Categories](https://people.csail.mit.edu/torralba/shortCourseRLOC/index.html)，ICCV 2005上的一节关于物体分类的课程。

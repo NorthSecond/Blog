@@ -9,8 +9,8 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is hm.baidu.com;
   style-src 'self' 'unsafe-inline';
-  img-src * blob: data: feishu.cn;
-  media-src *.s3.amazonaws.com;
+  img-src * blob: data: feishu.cn cs231n.github.io;
+  media-src *.s3.amazonaws.com music.163.com;
   connect-src *;
   font-src 'self';
   frame-src giscus.app

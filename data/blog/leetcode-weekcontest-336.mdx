@@ -1,0 +1,128 @@
+---
+title: "Leetcode 周赛 336 答案备份"
+date: 2023-03-13 13:00:00 +0800
+location: Zhuhai, China
+tags: [codes, Algorithm]
+---
+
+## 整体感受
+
+由于最近心乱如麻，加上下午还要考六级，随随便便过完就打住了。这套题的难度相对来说还是比较小的，没有啥特别特殊的点，第四题也就是一个简单的优化贪心而已。写起来还是比较快的。
+
+## A:2586. 统计范围内的元音字符串数
+
+- 题目链接：[统计范围内的元音字符串数](https://leetcode.cn/problems/count-the-number-of-vowel-strings-in-range/)
+
+```c++
+class Solution {
+
+public:
+
+    int vowelStrings(vector<string>& words, int left, int right) {
+
+      set<char> st = {'a', 'e', 'i', 'o', 'u'};
+
+
+
+      int ans = 0;
+
+      for(int i = left; i <= right; ++i){
+
+        // 这玩意不支持 C++ 20
+
+        // if(st.contains(words[i][0]) && st.contains(words[i][words[i].size() - 1]) {
+
+        int nowl = words[i].size() - 1;
+
+        if(st.find(words[i][0]) != st.end() && st.find(words[i][nowl])!=st.end()) {
+
+            ++ans;
+
+        }
+
+      }
+      return ans;
+    }
+
+};
+```
+
+## B: 2587: 重排数组已得到的最大前缀分数
+
+- 题目链接： [重排数组以得到最大前缀分数](https://leetcode.cn/problems/rearrange-array-to-maximize-prefix-score/)
+
+```cpp
+class Solution {
+
+public:
+
+    int maxScore(vector<int>& nums) {
+
+      long long sum = 0;
+
+      int ans = 0;
+
+
+
+      sort(nums.begin(), nums.end(), std::greater<int>());
+
+      for(auto i : nums){
+
+        sum += i;
+
+        if(sum > 0){
+
+            ++ans;
+
+        }
+
+      }
+
+      return ans;
+
+    }
+
+};
+```
+
+## C:6317. 统计美丽子数组数目
+
+- 题目链接： [统计美丽子数组数目](https://leetcode.cn/problems/count-the-number-of-beautiful-subarrays/)
+
+```cpp
+class Solution {
+
+public:
+
+    long long beautifulSubarrays(vector<int>& nums) {
+
+      int n = nums.size();
+
+      unordered_map<int, int> um;
+
+      um[0] = 1;
+
+      long long ans = 0;
+
+      int eor = 0;
+
+      for(int i = 0; i < n; i++) {
+
+        eor ^= nums[i];
+
+        if(um.find(eor) != um.end()) {
+
+            ans += um[eor];
+
+        }
+
+        um[eor]++;
+
+      }
+
+      return ans;
+
+    }
+
+};
+```

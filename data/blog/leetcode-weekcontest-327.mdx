@@ -1,0 +1,362 @@
+---
+title:  "Leetcode 周赛 327 答案备份"
+date:   2023-01-08 13:00:00 +0800
+tags: [codes, Algorithm]
+---
+
+## 整体感受
+
+前三题手速题，第四题大模拟，平时也就写写了，最近有点烦躁，干脆吃中午饭去了2333333
+
+这场题出的一般，主要考得就是基础数据结构和看文写作，没啥意思，<del>怕是出题人心思已经在回家过年了不好好出算法了</del>。
+
+## A:6283. 正整数和负整数的最大计数
+
+* 题目链接：[https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/)
+
+```cpp
+class Solution {
+public:
+    int maximumCount(vector<int>& nums) {
+        size_t l1 = 0, l2 = 0;
+        for(auto& i: nums){
+            if(i > 0){
+                ++l1;
+            } else if(i < 0) {
+                ++l2;
+            }
+        }
+    
+        return max(l1, l2);
+    }
+};
+```
+
+## B:6285. 执行 K 次操作后的最大分数
+
+* 题目链接：[https://leetcode.cn/problems/maximal-score-after-applying-k-operations/](https://leetcode.cn/problems/maximal-score-after-applying-k-operations/)
+
+```cpp
+class Solution {
+public:
+    long long maxKelements(vector<int>& nums, int k) {
+        priority_queue<int> n;
+        for(auto &i : nums){
+            n.push(i);
+        }
+        long long ans = 0;
+        int now;
+        for(int i = 0; i < k; ++i){
+            now = n.top();
+            n.pop();
+            if(!now){
+                return ans;
+            }
+            ans += now;
+            n.push(ceil(((double)now) / 3));
+        }
+        
+        return  ans;
+    }
+};
+```
+
+## C:6286. 使字符串总不同字符的数目相等
+
+* 题目链接：[https://leetcode.cn/problems/make-number-of-distinct-characters-equal/](https://leetcode.cn/problems/make-number-of-distinct-characters-equal/)
+
+### 大佬解法
+```cpp
+class Solution {
+public:
+    bool isItPossible(string word1, string word2) {
+        // 统计每种字符出现次数
+        int cnt1[26] = {0}, cnt2[26] = {0};
+        for (char c : word1) cnt1[c - 'a']++;
+        for (char c : word2) cnt2[c - 'a']++;
+
+        // 枚举交换哪两种字符
+        for (int i = 0; i < 26; i++) if (cnt1[i]) for (int j = 0; j < 26; j++) if (cnt2[j]) {
+            // 交换字符
+            cnt1[i]--; cnt1[j]++;
+            cnt2[j]--; cnt2[i]++;
+            // 检查交换后是否符合要求
+            int x = 0, y = 0;
+            for (int k = 0; k < 26; k++) if (cnt1[k]) x++;
+            for (int k = 0; k < 26; k++) if (cnt2[k]) y++;
+            if (x == y) return true;
+            // 撤销交换
+            cnt1[i]++; cnt1[j]--;
+            cnt2[j]++; cnt2[i]--;
+        }
+        return false;
+    }
+};
+作者：TsReaper
+链接：https://leetcode.cn/circle/discuss/jy4qll/view/LQ9xc8/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+### 我的解法
+```cpp
+class Solution {
+public:
+bool isItPossible(string w1, string w2)
+{
+    unordered_map<char, int> mp1, mp2;
+    for (int i = 0; i < w1.size(); i++)
+        mp1[w1[i]]++;
+    for (int i = 0; i < w2.size(); i++)
+        mp2[w2[i]]++;
+
+    int n1 = 0, n2 = 0;
+    // the number of distinct characters used in w1 and w2 are n1 & n2;
+    for (auto it = mp1.begin(); it != mp1.end(); it++)
+    {
+        if (mp1[it->first])
+            n1++;
+    }
+    for (auto it = mp2.begin(); it != mp2.end(); it++)
+    {
+        if (mp2[it->first])
+            n2++;
+    }
+
+    // if n1 == n2 by one move
+    if (abs(n1 - n2) > 2)
+    {
+        return false;
+    }
+
+    if (n1 - n2 == 2)
+    {
+        bool isa = 0, isb = 0;
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            // 多两个字符
+            // 左给一个自己一个的 右没有的
+            // 右给一个自己多个左有的
+            if (mp1[c] == 1 && mp2[c] == 0)
+            {
+                isa = 1;
+            }
+            if (mp2[c] > 1 && mp1[c])
+            {
+                isb = 1;
+            }
+        }
+        return isa && isb;
+    }
+    if (n2 - n1 == 2)
+    {
+        bool isa = 0, isb = 0;
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            if (mp2[c] == 1 && mp1[c] == 0)
+            {
+                isa = 1;
+            }
+            if (mp1[c] > 1 && mp2[c])
+            {
+                isb = 1;
+            }
+        }
+        return isa && isb;
+    }
+
+    if (n1 - n2 == 1)
+    {
+        // abcc aab
+        bool isa = 0, isb = 0;
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            // 左比右多一个
+            // 1. 左给一个自己一个的 右没有的
+            // 这个时候变成了右比左多一个了
+            // 右给一个自己一个左有的 就可以了
+            if (mp1[c] == 1 && mp2[c] == 0)
+            {
+                isa = 1;
+            }
+            if (mp2[c] == 1 && mp1[c])
+            {
+                isb = 1;
+            }
+        }
+        if (isa && isb)
+        {
+            return true;
+        }
+        // abcc aab
+        isa = 0, isb = 0;
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            // 2. 左给一个自己多个的 右没有的
+            // 平了
+            // 右给一个自己多个左有的
+            if (mp1[c] > 1 && mp2[c] == 0)
+            {
+                // c
+                isa = 1;
+            }
+            if (mp2[c] > 1 && mp1[c])
+            {
+                // a
+                isb = 1;
+            }
+        }
+        return isa && isb;
+    }
+    if (n2 - n1 == 1)
+    {
+        bool isa = 0, isb = 0;
+        // aab bccd
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            if (mp2[c] == 1 && mp1[c] == 0)
+            {
+                isa = 1;
+            }
+            if (mp1[c] == 1 && mp2[c])
+            {
+                isb = 1;
+            }
+        }
+        if (isa && isb)
+        {
+            return true;
+        }
+        isa = 0, isb = 0;
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            if (mp2[c] > 1 && mp1[c] == 0)
+            {
+                isa = 1;
+            }
+            if (mp1[c] > 1 && mp2[c])
+            {
+                isb = 1;
+            }
+        }
+        return isa && isb;
+    }
+
+    // 两个相等 总得换一次
+    // 两个都有多个的或者两个都有一个的就行
+    bool f1 = false, f2 = false, f3 = false, f4 = false;
+    for (char i = 'a'; i <= 'z'; ++i)
+    {
+        if (mp1[i] == 1)
+        {
+            f1 = true;
+        }
+        if (mp2[i] == 1)
+        {
+            f2 = true;
+        }
+        if (mp1[i] > 1)
+        {
+            f3 = true;
+        }
+        if (mp2[i] > 1)
+        {
+            f4 = true;
+        }
+    }
+    return (f1 && f2) || (f3 && f4);
+}
+};
+```
+
+## D：6306. 过桥的时间
+
+* 题目链接：[https://leetcode.cn/problems/time-to-cross-a-bridge/](https://leetcode.cn/problems/time-to-cross-a-bridge/)
+
+用四个堆大模拟 实在是不想写了。
+
+### 大佬解法
+
+```cpp
+class Solution {
+public:
+    int findCrossingTime(int n, int K, vector<vector<int>>& time) {
+        typedef pair<long long, int> pli;
+
+        // 所有工人按效率从高到低排序
+        // 因为不需要输出和工人下标有关系的东西，排序后下标的顺序就是效率顺序，比较方便
+        for (int i = 0; i < K; i++) time[i].push_back(i);
+        sort(time.begin(), time.end(), [](vector<int> &a, vector<int> &b) {
+            int L = a[0] + a[2], R = b[0] + b[2];
+            if (L != R) return L < R;
+            else return a[4] < b[4];
+        });
+
+        // now：桥接下来的可用时间
+        long long now = 0;
+        // 用大根堆模拟效率低的工人先过桥
+        // left：左边目前有哪些工人等待过桥
+        // right：右边目前有哪些工人等待过桥
+        priority_queue<int> left, right;
+        // 用小根堆模拟哪些工人先放好箱子
+        // pL：左边有哪些工人正在放箱子
+        // pR：右边有哪些工人正在拿箱子
+        // 这个 pair 中，第一个数是工人放（拿）好箱子的时间，第二个数是工人的编号
+        priority_queue<pli, vector<pli>, greater<pli>> pL, pR;
+        // 一开始所有工人都在左边等待
+        for (int i = 0; i < K; i++) left.push(i);
+        // 模拟搬运过程
+        while (true) {
+            // 桥接下来的可用时间到来前，哪些工人已经放好箱子了，把他们加入等待队列
+            while (!pL.empty()) {
+                pli p = pL.top();
+                if (p.first > now) break;
+                pL.pop();
+                left.push(p.second);
+            }
+            while (!pR.empty()) {
+                pli p = pR.top();
+                if (p.first > now) break;
+                pR.pop();
+                right.push(p.second);
+            }
+
+            // 判断桥接下来的可用时间到来后，左右是否有人可以过桥
+            bool leftGo = n > 0 && !left.empty();
+            bool rightGo = !right.empty();
+            if (!leftGo && !rightGo) {
+                // 左右都没有人可以过桥，直接快进到下一个有人过桥的时间
+                long long x = 1e18;
+                if (!pL.empty()) x = min(x, pL.top().first);
+                if (!pR.empty()) x = min(x, pR.top().first);
+                now = x;
+                continue;
+            }
+
+            if (rightGo) {
+                // 右边有人要过桥
+                int x = right.top(); right.pop();
+                now += time[x][2];
+                // 已经没有箱子可以搬了，而且右边也没人等着过桥，可以返回答案
+                if (n == 0 && right.empty() && pR.empty()) return now;
+                // 把过桥的人加入放箱子的优先队列
+                pL.push(pli(now + time[x][3], x));
+            } else {
+                // 左边有人要过桥
+                int x = left.top(); left.pop();
+                now += time[x][0];
+                // 拿走一个箱子
+                n--;
+                // 把过桥的人加入拿箱子的优先队列
+                pR.push(pli(now + time[x][1], x));
+            }
+        }
+    }
+};
+
+
+作者：tsreaper
+链接：https://leetcode.cn/problems/time-to-cross-a-bridge/solution/by-tsreaper-clsg/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```

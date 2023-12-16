@@ -1,0 +1,712 @@
+---
+title:  "五道CodeForces题目"
+date:   2023-01-22 17:00:00 +0800
+summary: 课程[算法分析与设计]大作业。
+tags: [Algorithm, codes, 课程内容]
+---
+
+## 题目1-Koxia and Game
+
+### 1. 题目基本情况：
+
++ 题目来源：
++ 题目链接：
+	+ CodeForces 链接：[https://codeforces.com/contest/1770/problem/D](https://codeforces.com/contest/1770/problem/D)
+	+ Vjudge 链接：[https://vjudge.net/problem/CodeForces-1770D](https://vjudge.net/problem/CodeForces-1770D)
++ 算法分类：博弈问题+图论（图的遍历）
+
+### 2. 题目内容：
+
+题目截图：
+![Pasted image 20230118225811.png](/img/post_pics/2301221.png)
+
+### 3. 解题思路
+
+1. 首先我们要确定的一点是：在每一轮游戏中，Koxia 应当移除 $S$ 中恰当的元素使得$S$ 中剩余的两个元素是相同的，也就是说如果 Koxia 想赢的话， Mahiru 的选择实际上并不能影响游戏结果。证明如下：
+	+ 在第 $n$ 轮游戏中，如果 Koxia 留下了两个不同的元素， 则 Mahiru 总是可以阻止 $p$ 成为一个排列。这意味着只有当 $d_n$ 对于 Mahiru 只有一种选择时，Koxia 才可能获胜。
+	+ $d_n$ 确定后，$d_1, d_2, \cdots, d_{n - 1}$ 将会是某 $n - 1$ 个数的排列。然后使用数学归纳法也就能证明了
+2. 其次我们分析 $a$ 和 $b$ 两个数组对于获胜情况的影响。我们假设存在一个长度为 $n$ 的数组 $p$ ，其中， $p_i = a_i \text{或} b_i$ 。Koxia 获胜的充要条件是存在是一个排列的数组 $p$ 。
+	+ 这点很好证明，从第一点我们可以知道 Koxia 想赢的话 $a_i$ , $b_i$ 和 $c_i$ 至少有两个要是相同的。
+	+ 那如果 $p$ 不能是排列的话，加上 $c_i$，哪怕 $c_i$ 是理想的结果，但是由于 $a_i$ 和 $b_i$ 都不是理想的结果，和第一点就相悖了。
+3. 之后这个问题的第一步就变成了判断这样的 $p$ 是否存在了。
+	+ 解决方法：图论
+	+ 我们建立一个大小为 $n$ 的图，节点为 $1,2,\cdots, n$，每一个输入$(a_i, b_i)$就相当于建立了一条 $a_i$  和 $b_i$ 之间的边。
+	+ 做出选择的过程就相当于给这条边指定一个方向（无向图->有向图），$p$ 是排列的充要条件就是每个顶点都要有边指向。由图论可知这各条件等价于其对于整个图的所有连通分量而言，有 $\lvert V\rvert = \lvert E\rvert$ 。
+	+ 要对于每个连通分量进行 $\lvert V\rvert = \lvert E\rvert$ 的判断的话，实质上就是图的遍历，不同遍历方法的复杂度是不一样的。
+4. 这个问题的第二部是计数。
+	+ 为了解决计数的问题，让我们考虑每一个连通分量的结构。每个满足3.中条件的的连通分量都可以被视为 一棵树加上一条附加边，而这条边可以分为两类。
+		+ 附加边和其他树边一起形成环。在环上，我们有两种边选点的方案（顺时针和逆时针），而在此之后其他边选点的方案将是固定的（边指向远离环的方向）。也就是说，这里 $a_i \neq b_i$ ，$c_i$ 的选值会影响答案的选取，答案要乘以 $2$。
+		+ 附加边形成自环。此时 $c_i$ 的取值并不影响图的结构，所以任何 $[1,n]$ 内的取值都是合法的，而其他边选点的方案将是固定的。也就是说，这里有 $a_i = b_i$，$c_i$ 只要满足要求就可以随便去取值了，答案要乘以$n$。
+	+ 所以问题的答案就变成了 $2^{cnt_1} \times n^{cnt_2} \% mod$，其中，$cnt_1$代 表成非自环的连通分量数量$cnt_2$代表成自环的连通分量数量。
+
+### 4. 算法复杂度分析
+
+解法的时间复杂度主要来自于图的遍历，这里我使用 DFS 进行图遍历，时间复杂度为 $O(n)$（要使用并查集的话就是$O(n\alpha(n))$）。
+
+### 5. 解题代码
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+typedef unsigned int usint;
+typedef unsigned long long ull;
+
+#define debug(x) std::cout << x << std::endl
+#define fre(x, i) for (i = 0; i < x; ++i)
+#define rep(i, a, b) for (i = a; i <= b; ++i)
+const usint MAXN = 1e5 + 5;
+const int mod = 998244353;
+
+usint i;
+int n, a[MAXN], b[MAXN];
+
+// graph
+vector<int> G[MAXN];
+bool vis[MAXN];
+// 各种计数
+int vertex, edge, self_loop;
+
+// DFS 图的遍历
+void dfs(int x)
+{
+    if (vis[x])
+        return;
+    vis[x] = true;
+    // 计数 点
+    vertex++;
+    for (int &y : G[x])
+    {
+        // 计数 边
+        edge++;
+        dfs(y);
+        if (y == x)
+        {
+            // 计数 自环
+            self_loop++;
+        }
+    }
+}
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+    usint N;
+    cin >> N;
+    while (N--)
+    {
+        cin >> n;
+        rep(i, 1, n)
+        {
+            cin >> a[i];
+        }
+        rep(i, 1, n)
+        {
+            cin >> b[i];
+        }
+        rep(i, 1, n)
+        {
+            G[i].clear();
+            vis[i] = false;
+        }
+        // 加边构建图
+        rep(i, 1, n)
+        {
+            G[a[i]].push_back(b[i]);
+            G[b[i]].push_back(a[i]);
+        }
+  
+        // 计数
+        ll ans = 1;
+        rep(i, 1, n)
+        {
+            // 未访问过的点(连通分量)
+            if (!vis[i])
+            {
+                vertex = 0;
+                edge = 0;
+                self_loop = 0;
+                dfs(i);
+                // 计算答案
+                if(edge != 2 * vertex)
+                {
+                    ans = 0;
+                }else if(self_loop){
+                    // 有自环
+                    // 防止溢出 1ll
+                    ans = 1ll * ans * n % mod;
+                }else{
+                    // 无自环
+                    ans = 1ll * ans * 2 % mod;
+                }
+            }
+        }
+        debug(ans);
+
+    }
+    return 0;
+}
+```
+![Pasted image 20230120160551.png](/img/post_pics/2301222.png)
+
+## 题目2-Boris and His Amazing Haircut
+### 1. 题目基本情况：
+
++ 题目来源：CodeForces
++ 题目链接：
+	+ CodeForces 链接：[https://codeforces.com/problemset/problem/1779/D](https://codeforces.com/problemset/problem/1779/D)
+	+ Vjudge 链接：[https://vjudge.net/problem/CodeForces-1779D](https://vjudge.net/problem/CodeForces-1779D)
++ 算法分类：单调栈 + 贪心算法
+
+### 2. 题目内容：
+题目截图：
+![Pasted image 20230120161150.png](/img/post_pics/2301223.png)
+题目大意：
+给定一个长度为 $n$ 的初始数组和一个目标数组，你有 $m$ 次操作机会，给定 $m$ 个数 $x_i$，每次操作选择一个区间 $[l,r]$ 使得区间内所有数变成 $a_i = min(a_i, x)$，请问能否构造出目标数组。
+
+### 3. 解题思路
+
+这道题和上一题相比比较简单。
+
+首先我们明确剪头发肯定是从高到低剪头，没有从低到高的道理。这点相通了其实就明白了。
+
+首先要是自己头发还没长到需要的长度，那肯定是剪不出来的。
+
+对于某一个高度的数$T$，假如存在多个目标位置集合为$t$，假如任意两个相邻的 $t$之间存在一个点$i$ 使得 $b_i > T$，那么这两个$t$ 一定是两次剪成的。
+
+那么假设所有 $t$ 之间都有这样的点 $i$ ，那么最坏的操作次数为 $t$ 的数量。我们在此基础上分别查询每两个 $t$ 之间的最大值是否比 $T$ 更大，如果不是的话那么此时的操作次数就减一。对于每个 $T$  从大到小这样计算就行了。
+
+至于区间最值的解决方法就很多样了，本来想用线段树的，但是考虑到这里的区间查询是单调的并且只涉及到区间最大值，就换用单调栈了。算法还是合适范围内越简单越好。
+
+至于本题中单调栈区间最值的求解方式，在此简述如下：
++ 用单调栈维护一段单调非递减的区间。栈内存的是（高度，状态：即这个地方需要不需要被剪，转化为题目中的条件就是该处是否有 $a_i \neq b_i$ ）。每次遍历到新的元素 $b_i$ 时：
+	+ 新建一个集合，用来存储需要的推子
+	+ $b_i <$栈尾元素，入栈
+	+ 只要栈尾元素的高度小于当前 $b_i$ ，就弹出栈尾元素（不能再拿原来推子剪了，会剪短）
+	+ 如果弹出了元素，就检查弹出元素的状态，如果该状态显示 $a_i \neq b_i$ ，说明这个地方确实该剪上一刀，把对应的腿子添加进集合中；反之说明这个地方不需要被剪，直接 `continue` 即可
+
+最后使用哈希表映射关系比较这个集合和给定的推子集合即可，如果此集合是给定集合的子集，那么就能剪，反之就不行。
+
+### 4. 复杂度分析
+
+遍历和单调栈建立的复杂度为 $O(n + m)$，哈希表映射比较推子数量的复杂度是 $O(n\log n + m\log m)$（比较过程有一个排序）。
+
+### 5. 解题代码
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned int usint;
+typedef unsigned long long ull;
+
+#define debug(x) std::cout << x << std::endl
+#define fre(x, i) for (i = 0; i < x; ++i)
+#define rep(i, a, b) for (i = a; i <= b; ++i)
+
+const usint MAXN = 2e5 + 5;
+// int a[MAXN];
+usint i;
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+    usint N;
+    cin >> N;
+    while (N--)
+    {
+        usint n;
+        cin >> n;
+
+        vector<int> a(n + 1, 0);
+        rep(i, 1, n)
+        {
+            cin >> a[i];
+        }
+        // b_i 的栈
+        stack<int> st;
+
+        // 看看每个高度需要多少把推子
+        unordered_map<int, int> mp;
+
+        // 检查是否有 b_i > a_i
+        bool flag = true;
+        int tmp;
+        rep(i, 1, n)
+        {
+            cin >> tmp;
+            if (tmp > a[i])
+            {
+                // 没长到指定长度 不用管了
+                flag = false;
+            }
+            if (!flag)
+            {
+                continue;
+            }
+            if (st.empty() && tmp == a[i])
+            {
+                // 特殊情况：前面的剪完了 这里不用剪 那就不管他了
+                continue;
+            }
+            if ((st.empty() || tmp < st.top()) && tmp != a[i])
+            {
+                // 入栈
+                st.push(tmp);
+            }
+            else if (tmp > st.top())
+            {// 区间右端点了 要换推子了
+                while (!st.empty() && tmp > st.top())
+                {
+                    // 加推子出栈
+                    mp[st.top()]++;
+                    st.pop();
+                }
+                if((st.empty() || tmp != st.top()) && tmp != a[i])
+                {
+                    // 入栈
+                    st.push(tmp);
+                }
+            }
+        }
+
+        // 剩下的这些也要加上
+        while (!st.empty())
+        {
+            mp[st.top()]++;
+            st.pop();
+        }
+
+        int m;
+        cin >> m;
+        while (m--)
+        {
+            cin >> tmp;
+            // 看看满不满足要求
+            if (mp.find(tmp) != mp.end()){
+                mp[tmp]--;
+                if (mp[tmp] == 0)
+                {
+                    mp.erase(tmp);
+                }
+            }
+        }
+
+        // 看看还有没有推子没满足
+        if (mp.empty() && flag)
+        {
+            cout << "YES" << endl;
+        }
+        else
+        {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}
+
+```
+![Pasted image 20230120170956.png](/img/post_pics/2301224.png)
+
+## 题目3-Koxia and Tree
+### 1. 题目基本情况：
++ 题目来源：CodeForces
++ 题目链接：
+	+ CodeForces 链接：[https://codeforces.com/contest/1770/problem/E](https://codeforces.com/contest/1770/problem/E)
+	+ Vjudge 链接：[https://vjudge.net/problem/CodeForces-1770E](https://vjudge.net/problem/CodeForces-1770E)
++ 算法分类：树 + 数学 + DFS
+### 2. 题目内容：
+题目截图：
+![Pasted image 20230120173739.png](/img/post_pics/2301225.png)
+
+### 3. 解题思路
+
+这个题看起来很吓人,做起来其实也很吓人。这场比赛 Koxia 把人创的够呛，当时只做出来了四道题，这道题其实是赛后看着 Hint + Totorial 花了大半天时间补通的。所以我的解题思路也将跟从官方的 Hint 一步步来（比赛再来一次估计还是做不出来）。
+
+> **Hint 1:**
+> Solve a classic problem — find the sum of pairwise distances of $k$ chosen nodes in a tree.
+> 
+> **Hint 2:**
+> If we add the move operations while the direction of edges are fixed, find the sum of pairwise distances of $k$ chosen nodes.
+> 
+> **Hint 2.5:**
+> If you can't solve the problem in Hint 2, consider why writers make each edge passed by butterflies for at most once.
+> 
+> **Hint 3**:
+> When the direction of edges become random, how maintaining $p_i$ as the possibility of "node $i$ contains a butterfly" help you to get the answer?
+
+**Hint 1** 对应了一个很经典的问题：求树上指定 $k$ 个节点两两之间的距离和。
+对于任意一条边，设其一侧有 $x$ 个指定节点，另一侧指定节点数即为 $n - x$，则经过这条边的节点连线数为 $n(n - x)$。不失一般性，我们可以以节点 $1$ 为根，设其子树 $i$ 的大小为 $size_i$ 。对于树上的每条边 $(fa \rightarrow son)$执行刚才说明的计算并求和，经过一次复杂度为 $O(n)$的遍历我们就得到了距离和的答案，在除以  $\tbinom{k}{2}$ 之后就得到了一个在蝴蝶没有移动的静态状态下的最简单的期望。 
+
+接下来我们考虑 **Hint 2**。此时就加上边方向固定的移动了。对于子树1，我们设移动过程中的子树规模变化为 $size_i \rightarrow size_i'$ 则有 $\lvert size_i - size_i'\rvert\leq 1$，这是一个很重要的性质。Hint 2.5 其实也是在引导我们得出这个性质。 
+
+接下来就引入随机方向和了。
+
+进行定向操作的过程中我们需要维护过程中每个结点是否存在蝴蝶的概率,初始状态,蝴蝶都在初始位置,概率为$1$,初始没有蝴蝶的位置概率为$0$。依次操作每条边,每次操作只会改变边两个端点有蝴蝶的概率.不妨设边$(u,v)$两个端点有蝴蝶的概率为$p_u, p_v$,当$u$有蝴蝶,$v$没有蝴蝶时有 $\frac{1}{2}$ 的概率蝴蝶从 $u\rightarrow v$,使得$size_u$加一.设此概率$p_1=\frac{p_u(1-p_v)}{2}$,类似地,$size_u$减一的概率$p_2 = \frac{p_v(1-p_u)}{2}$,不变的概率即为 $1-p_1-p_2$ 得到概率后即可统计答案。
+
+每次操作之后有对应的三种情况：
+1. $u,v$ 都有蝴蝶, 无论如果边定向都无所谓
+2. $u$ 有蝴蝶,$v$ 没有蝴蝶,定向 $u \rightarrow v$
+3. $v$ 没有蝴蝶,$u$ 有蝴蝶,定向$v \rightarrow u$
+
+$u,v$调转过来也是一样的分析方式。所以有
+
+$$
+p_v \leftarrow p_vp_u + \frac{p_u(1-p_v)}{2} + \frac{p_v(1-p_u)}{2} = \frac{p_u+ p_v}{2} \qquad p_u\leftarrow\frac{p_u+ p_v}{2}
+$$
+
+### 4. 复杂度分析
+
+复杂度主要来自于 DFS ，显然为 $O(n)$
+
+### 5. 解题代码
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned int usint;
+typedef unsigned long long ull;
+
+#define debug(x) std::cout << x << std::endl
+#define fre(x, i) for (i = 0; i < x; ++i)
+#define rep(i, a, b) for (i = a; i <= b; ++i)
+
+const usint MAXN = 3e5 + 5;
+const int mod = 998244353;
+const int inv = 499122177;
+
+// 快速幂
+ll quick_pow(ll a, ll b)
+{
+    ll ans = 1;
+    while (b)
+    {
+        if (b & 1)
+        {
+            ans = ans * a % mod;
+        }
+        a = a * a % mod;
+        b >>= 1;
+    }
+    return ans;
+}
+
+// 逆元
+ll get_inv(ll a)
+{
+    return quick_pow(a, mod - 2);
+}
+
+ll i;
+int n, k;
+ll a[MAXN], u[MAXN], v[MAXN], p[MAXN], sum[MAXN];
+vector<int> G[MAXN];
+int fa[MAXN];
+
+// 遍历树
+void dfs(int u, int f)
+{
+    sum[u] = p[u];
+    for (int &v : G[u])
+    {
+        if (v == f)
+            continue;
+        dfs(v, u);
+        fa[v] = u;
+        sum[u] += sum[v];
+    }
+}
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+
+    cin >> n >> k;
+    rep(i, 1, k)
+    {
+        cin >> a[i];
+        p[a[i]] = 1;
+    }
+    // 读入边 构建无向树
+    rep(i, 1, n - 1)
+    {
+        cin >> u[i] >> v[i];
+        G[u[i]].push_back(v[i]);
+        G[v[i]].push_back(u[i]);
+    }
+    // 遍历树
+    dfs(1, -1);
+
+    ll ans = 0;
+    rep(i, 1, n - 1)
+    {
+        if (fa[u[i]] == v[i])
+        {
+            swap(u[i], v[i]);
+        }
+        // p_u->v p_v->u
+        ll puv = p[u[i]] * (1 - p[v[i]]) % mod;
+        ll pvu = p[v[i]] * (1 - p[u[i]]) % mod;
+
+        ll delta = 0;
+        delta -= puv * sum[v[i]] % mod * (k - sum[v[i]]) % mod;
+        delta -= pvu * sum[v[i]] % mod * (k - sum[v[i]]) % mod;
+        delta += puv * (sum[v[i]] + 1) % mod * (k - sum[v[i]] - 1) % mod;
+        delta += pvu * (sum[v[i]] - 1) % mod * (k - sum[v[i]] + 1) % mod;
+
+        ans = (ans + sum[v[i]] * (k - sum[v[i]]) + delta * inv) % mod;
+        // 经典老梗之你得保证他是真的在范围内
+        ans = (ans % mod + mod) % mod;
+        // 1ll 防止溢出
+        p[u[i]] = p[v[i]] = 1ll * (p[u[i]] + p[v[i]]) * inv % mod;
+    }
+    // 求和最后求期望
+    // (n - 1) * n / 2 太大了 直接除会出问题
+    // 逆元了
+    debug(ans * get_inv(1ll * k * (k - 1) / 2 % mod) % mod);
+
+    return 0;
+}
+
+```
+![Pasted image 20230120191058.png](/img/post_pics/2301226.png)
+
+
+## 题目4-Mysterious Code
+### 1. 题目基本情况：
++ 题目来源：CodeForces
++ 题目链接：
+	+ CodeForces 链接：[https://codeforces.com/problemset/problem/1163/D](https://codeforces.com/problemset/problem/1163/D)
+	+ Vjudge 链接：[https://vjudge.net/problem/CodeForces-1163D](https://vjudge.net/problem/CodeForces-1163D)
++ 算法分类：AC 自动机 + DP
+### 2. 题目内容：
+题目截图：
+![Pasted image 20230120203106.png](/img/post_pics/2301227.png)
+
+### 3. 解题思路
+搞了三道新题，弄点简单的经典题。这道题没啥特别值得说的。
+
+看到这个多模式匹配就想到 dp 了。但是刚开始没想明白怎么dp。
+
+然后就继续研究，有了模式串和字串匹配了那就AC自动机了。建了 AC 自动机dp就好推了。对于 $s$ 串和 $t$ 串，我们分别建立一个 AC 自动机。
+
+我们设目标函数 $f(i, j,k)$ 表示前 $i$ 位确定时在 $s$ 串的 AC自动机 $j$ 节点上，在 $t$ 串的AC自动机的 $k$ 节点上。然后采用刷表法来推转移，有模式串 $S$ 在转移到节点 $∣S∣$ 时有贡献。初始 $f(0,0,0)=0$ 状态转移方程为 
+
+$$
+f(i+1,trs_{j,c_{i+1}},trt_{k,c_{i+1}})=max\{f(i,j,k)+w\}
+$$
+
+目标函数为$max\{f(n,j,k)\}$。
+
+其中 $trs$ 和 $trt$ 分别是 $s$ 串和 $t$ 串的AC自动机转移函数，$w$ 表示前 $i$ 位加上新来的字符 $p$ 之后匹配次数差值的变化量。分别判断一下新到的自动机状态是不是结尾状态即可。
+
+如果主串的第 $i+1$ 位不是 `*`，那么 $p$ 只能为主串的第 $i+1$ 位,否则 $p$ 可以取到每一个小写字母。
+
+### 4. 复杂度分析
+
+时间复杂度 $O(\lvert c\rvert\lvert s\rvert\lvert t\rvert S)$ ，其中 $\lvert x\rvert$为字符串 $\lvert x\rvert$的长度， $S$ 为字符集大小，本题目中为 $26$ .
+
+### 5. 解题代码
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned int usint;
+typedef unsigned long long ull;
+
+#define debug(x) std::cout << x << std::endl
+#define fre(x, i) for (i = 0; i < x; ++i)
+#define rep(i, a, b) for (i = a; i <= b; ++i)
+
+const usint M = 55, N = 1005, S = 26;
+
+usint i, j, k;
+int n, m1, m2;
+ll dp[N][M][M];
+int nxt1[N][S], nxt2[N][S];
+
+string s, a, b;
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+    cin >> s >> a >> b;
+    n = s.size();
+    m1 = a.size();
+    m2 = b.size();
+
+    // AC自动机初始化
+    j = 0;
+    fre(m1, i)
+    {
+        j = nxt1[j][a[i] - 'a'];
+        nxt1[i][a[i] - 'a'] = i + 1;
+        fre(S, k)
+        {
+            nxt1[i + 1][k] = nxt1[j][k];
+        }
+    }
+    j = 0;
+    fre(m2, i)
+    {
+        j = nxt2[j][b[i] - 'a'];
+        nxt2[i][b[i] - 'a'] = i + 1;
+        fre(S, k)
+        {
+            nxt2[i + 1][k] = nxt2[j][k];
+        }
+    }
+
+    // dp
+    memset(dp, -0x3f, sizeof(dp));
+    dp[0][0][0] = 0;
+    fre(n, i)
+    {
+        fre(m1 + 1, j)
+        {
+            fre(m2 + 1, k)
+            {
+                if (dp[i][j][k] < -1e9)
+                {
+                    continue;
+                }
+                for (char c = '*' ? 'a' : s[i]; c <= (s[i] == '*' ? 'z' : s[i]); ++c)
+                {
+                    // 状态转移
+                    int nj = nxt1[j][c - 'a'];
+                    int nk = nxt2[k][c - 'a'];
+                    dp[i + 1][nj][nk] = max(dp[i + 1][nj][nk], dp[i][j][k] + (nj == m1) - (nk == m2));
+                }
+            }
+        }
+    }
+
+    ll ans = INT_MIN;
+    fre(m1 + 1, j)
+    {
+        fre(m2 + 1, k)
+        {
+            ans = max(ans, dp[n][j][k]);
+        }
+    }
+    debug(ans);
+    return 0;
+}
+```
+![Pasted image 20230120214134.png](/img/post_pics/2301228.png)
+
+## 题目5-Many Perfect Squares
+### 1. 题目基本情况：
++ 题目来源：CodeForces
++ 题目链接：
+	+ CodeForces 链接：[https://codeforces.com/contest/1782/problem/D](https://codeforces.com/contest/1782/problem/D)
+	+ Vjudge 链接：[https://vjudge.net/problem/CodeForces-1782D](https://vjudge.net/problem/CodeForces-1782D)
++ 算法分类：数学+ `multiset`
+### 2. 题目内容：
+题目截图：
+![Pasted image 20230121091526.png](/img/post_pics/2301229.png)
+
+### 3. 解题思路
+
+这应该是五道题里面最简单的一道了。选这道题的原因是<del> tourist 的馈赠 </del>（这场比赛是 tourist 出的题）。难度不大但是实现起来会有一点点小坑，<del>复杂度算出来之后让人直呼不敢写</del>。
+
+首先分析题目，题目要求给定一个数组 $a_1, a_2, \dots, a_n$，找到一个 $x \in [0, 10^{18}]$，使得给数组所有数加上 $x$ 之后产生的完全平方数最多。数据范围：$1 \le n \le 50$，$1 \le a_1 \lt a_2 \lt \dots \lt a_n \le 10^9$。
+
+首先我们可以明确的是定然有 $x>1$，由于 $a$ 是递增数组，那就必然存在$i,j(i<j)$，使得存在满足题意的 $x$ 使得 $a_i+x,a_j+x$ 都是完全平方数。考虑平方差公式$a^2 - b^2 = (a+b)(a-b)$，我们可以对于乘积进行分解。由于分解乘积的复杂度是 $\sqrt{a^2 - b^2}$​，最大为 $\sqrt{10^9}$​，这个时间复杂度就是可以接受的。这时，我们对序列中任意两个数 $a_i, a_j, j < i$ ，我们都可以算出所有可能的 $a_i - a_j$ ​ 的分解方式。
+
+而对于某种分解方式来说，我们可以还原出 $a^2$ 和 $b^2$，这时我们应当有 $a^2 - b^2 = a_i - a_j$​。这时，只要 $b^2 \ge a_j$​，则 $b^2 - a_j$​ 可以作为一个满足题意的 $x$ 值。
+
+我们考虑使用标准库的 `multiset` 记录每个 $x$ 值的方案数。如果外层遍历左端点 $j$，内层遍历右端点 $i$，那么每次内层遍历都会涉及其后的所有元素。考虑以下两种情况：
+
+-   后续内层遍历到的 $x$ 值在过去的外层遍历从未出现过，那么这样的 $x$ 无法使得前面的元素为完全平方数，故不需要统计过去的元素
+-   如果出现过，那么在过去的外层遍历已经处理过。
+
+因此考虑直接每次内层遍历后清空 `multiset` 避免重复计数。当然也可以考虑在 `multiset` 中对每个 $x$ 值记录其能使哪些数变为完全平方数，这样更符合直觉。
+
+### 4. 复杂度分析
+
+<del> O(能过) </del> 
+整体复杂度来源就是分解乘积过程中的遍历（$1 \le n \le 50$，对于数组的遍历翻不起什么浪花），大致的最差数量级是 $\sqrt{10^9}$。
+
+### 5. 解题代码
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned int usint;
+typedef unsigned long long ull;
+
+#define debug(x) std::cout << x << std::endl
+#define fre(x, i) for (i = 0; i < x; ++i)
+#define rep(i, a, b) for (i = a; i <= b; ++i)
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+
+    multiset<ll> s;
+    vector<ll> v;
+    int maxCount;
+
+    usint T, n, i, j , k;
+    // b - a & \sqrt{b - a} res
+    ll delta, sres;
+    cin >> T;
+    while(T--){
+        delta = sres = 0;
+        cin >> n;
+        v.resize(n);
+        fre(n, i){
+            cin >> v[i];
+        }
+        maxCount = 1;
+
+        fre(n-1, i){
+            // 外层循环 每次内层循环都会清空s
+            s.clear();
+            rep(j, i+1, n-1){
+                delta = v[j] - v[i];
+                sres = sqrt(delta);
+                // 分解乘积的遍历
+                rep(k, 1, sres){
+                    if(delta % k == 0){
+                        ll another = delta / k;
+                        ll a2 = another + k;
+                        if(a2 % 2){
+                            continue;
+                        }
+                        ll b2 = another - k;
+                        if(b2 % 2){
+                            continue;
+                        }
+                        ll b = b2 / 2;
+
+                        if(b * b >= v[i]){
+                            s.emplace(b);
+                            int count = s.count(b);
+                            if(count + 1 > maxCount){
+                                // 最佳方案数更新
+                                maxCount = count + 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        debug(maxCount);
+    }
+    return 0;
+}
+
+```
+
+![Pasted image 20230122165356.png](/img/post_pics/23012210.png)
