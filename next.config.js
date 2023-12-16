@@ -13,7 +13,7 @@ const ContentSecurityPolicy = `
   media-src *.s3.amazonaws.com music.163.com;
   connect-src *;
   font-src 'self';
-  frame-src giscus.app
+  frame-src giscus.app music.163.com;
 `
 
 const securityHeaders = [
