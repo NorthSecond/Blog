@@ -1,8 +1,8 @@
-import friendsData from "@/data/friendsData";
-import FriendCard from "@/components/friendCard";
-import { genPageMetadata } from "app/seo";
+import friendsData from '@/data/friendsData'
+import FriendCard from '@/components/friendCard'
+import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: "Friends" });
+export const metadata = genPageMetadata({ title: 'Friends' })
 
 export default function Friends() {
   return (
@@ -16,16 +16,11 @@ export default function Friends() {
         <div className="container py-12">
           <div className="-m-4 flex flex-wrap">
             {friendsData.map((d) => (
-              <FriendCard
-                key={d.name}
-                title={d.name}
-                description={d.description}
-                href={d.href}
-              />
+              <FriendCard key={d.name} title={d.name} description={d.description} href={d.href} />
             ))}
           </div>
         </div>
       </div>
     </>
-  );
+  )
 }

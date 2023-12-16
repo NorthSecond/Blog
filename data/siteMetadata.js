@@ -1,8 +1,8 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'NorthSecond\'s Blog',
+  title: "NorthSecond's Blog",
   author: 'NorthSecond',
-  headerTitle: 'NorthSecond\'s Blog',
+  headerTitle: "NorthSecond's Blog",
   description: '记录关于技术、生活和一些有趣的想法',
   language: 'zh-CN',
   theme: 'system', // system, dark or light
@@ -77,14 +77,14 @@ const siteMetadata = {
   //   kbarConfig: {
   //     searchDocumentsPath: 'search.json', // path to load documents to search
   //   },
-    // provider: 'algolia',
-    // algoliaConfig: {
-    //   // The application ID provided by Algolia
-    //   appId: 'R2IYF7ETH7',
-    //   // Public API key: it is safe to commit it
-    //   apiKey: '599cec31baffa4868cae4e79f180729b',
-    //   indexName: 'docsearch',
-    // },
+  // provider: 'algolia',
+  // algoliaConfig: {
+  //   // The application ID provided by Algolia
+  //   appId: 'R2IYF7ETH7',
+  //   // Public API key: it is safe to commit it
+  //   apiKey: '599cec31baffa4868cae4e79f180729b',
+  //   indexName: 'docsearch',
+  // },
   // },
 }
 
