@@ -15,7 +15,7 @@
               "state": {
                 "file": "data/blog/flexflow-LXC.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }

@@ -20,7 +20,7 @@ tags:
 
 如果不对于代码和相关仓库文件进行修改的话，在代码拉取和 `config` 过程中都需要访问 Github，由于网络现实限制，请先做好网络相关准备。
 
-选择一个合适的目录，然后将 FlexFlow 代码从 Github 仓库（https://github.com/flexflow/FlexFlow.git）中拉到本地。
+选择一个合适的目录，然后将 FlexFlow 代码从 [Github 仓库](https://github.com/flexflow/FlexFlow.git) 中拉到本地。
 
 ```Bash
 git clone --recursive https://github.com/flexflow/FlexFlow.git
@@ -96,7 +96,7 @@ cd ./build
 make -j 14
 ```
 
-由于 38 服务器的 CPU 不太好使，开满的话怕给 LXC 玩崩了，因此只开14个进程进行并行编译。编译时间比较长，可以考虑使用 `tmux` 或者 `screen` 来防止因为 SSH 断开而炸掉。
+由于服务器的 CPU 不太好使，开满的话怕给 LXC 玩崩了，因此只开14个进程进行并行编译。编译时间比较长，可以考虑使用 `tmux` 或者 `screen` 来防止因为 SSH 断开而炸掉。
 
 实测从 0 开始编译的情况下 `-j 14` 大约用时 40 min，take a coffee and have a break~
 
@@ -155,7 +155,6 @@ cd "$FF_HOME"
 ```
 可以使用 export CUDA_VISIBLE_DEVICES= 来对于当前运行的 GPU 来进行指定	
 - 测试可以成功运行，大概需要32s：
-	- ![](/static/images/37b7a7c03c8323b822120623ab06c353.png)
 	- ![](/static/images/45851ef1812fe48de16b126f55b74979.png)
 - 同理，第二种方法只需要在执行配置脚本后把 `./build/flexflow_python` 改成 `python` 就可以了。
 ### C++ 接口测试
