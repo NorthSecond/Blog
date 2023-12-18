@@ -124,7 +124,6 @@ Flexflow 的 Python examples 在 [examples/python](https://github.com/flexflow/F
 测试 Python 接口有两种方式:
 
 - 第一种是 FlexFlow 自己提供了一个编译好的 python解释器 `flexflow_python`，位置在 `./build` 文件夹下。
-	- ![](/static/images/742d025984ab2d59bb4b5acc37ad0904.png)
 - 第二种方式是使用原生的 python 解释器，但是要提前按照设置脚本进行设置。可以在 flexflow 文件夹下运行
 ```Bash
 source ./build/set_python_envs.sh
