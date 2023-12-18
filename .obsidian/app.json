@@ -1,0 +1,9 @@
+{
+  "newFileLocation": "folder",
+  "newFileFolderPath": "data/blog",
+  "newLinkFormat": "absolute",
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "public/static/images",
+  "promptDelete": true,
+  "alwaysUpdateLinks": true
+}

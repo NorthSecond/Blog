@@ -1,0 +1,173 @@
+{
+  "main": {
+    "id": "6b4a0e7ce80f805d",
+    "type": "split",
+    "children": [
+      {
+        "id": "14bd4c69915a3a36",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bbbe125479b86ab7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "data/blog/flexflow-LXC.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ef7f82632ef5f188",
+    "type": "split",
+    "children": [
+      {
+        "id": "763b94b6aee2f299",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b534aa2eb1e0c3fd",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "5c98d1d9598a97e5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "9d25dd33266dd7a1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f1b939f19b1d1a85",
+    "type": "split",
+    "children": [
+      {
+        "id": "fae1069c3618774f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ce716510f320296d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "data/blog/flexflow-LXC.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4f8153193b6a92f7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "data/blog/flexflow-LXC.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "eff02413b1fa31f1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "672272af3894c7ef",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "data/blog/flexflow-LXC.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "bbbe125479b86ab7",
+  "lastOpenFiles": [
+    "data/blog/uswitch-2023.md",
+    "data/blog/leetcode-weekcontest-327.mdx",
+    "data/blog/honeycomb-osdi23.md",
+    "data/blog/flexflow-LXC.md",
+    "public/static/images/851e8a38440af465c42063e2514dd917.png",
+    "public/static/images/45851ef1812fe48de16b126f55b74979.png",
+    "public/static/images/37b7a7c03c8323b822120623ab06c353.png",
+    "public/static/images/742d025984ab2d59bb4b5acc37ad0904.png",
+    "public/static/images/647b2557b72390b586d8162cc65783bb.png",
+    "public/static/images/65cedaba5248129e7bf5b991d47299c8.png",
+    "data/blog/CSP-30th.mdx",
+    "data/blog/about-baoyan.mdx",
+    "data/blog/algorithm-major.mdx",
+    "data/blog/zipper-code-readme.mdx",
+    "data/blog/unity-2022.md",
+    "data/blog/sept-spummary.mdx",
+    "data/blog/realm-14.md",
+    "data/blog/race-thirty-years-ago.mdx",
+    "data/blog/paper-note-template.md",
+    "data/blog/overleaf-locally.md",
+    "data/blog/cs231n_note0.mdx",
+    "data/blog/birthday-22.mdx",
+    "data/blog/about-Intelligentsia.mdx"
+  ]
+}
