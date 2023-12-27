@@ -13,13 +13,24 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "data/blog/flexflow-LXC.md",
+                "file": "data/blog/paper-note-template.md",
                 "mode": "source",
                 "source": true
               }
             }
+          },
+          {
+            "id": "d39f46a06e31a340",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.5.3"
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -85,7 +96,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "data/blog/flexflow-LXC.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +112,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "data/blog/flexflow-LXC.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "data/blog/flexflow-LXC.md"
+                "file": "data/blog/eopf-osdi23.md"
               }
             }
           }
@@ -144,12 +153,15 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "bbbe125479b86ab7",
+  "active": "b534aa2eb1e0c3fd",
   "lastOpenFiles": [
+    "data/blog/honeycomb-osdi23.md",
+    "data/blog/eopf-osdi23.md",
+    "data/blog/paper-note-template.md",
+    "data/blog/year-summary-2022.mdx",
+    "data/blog/flexflow-LXC.md",
     "data/blog/uswitch-2023.md",
     "data/blog/leetcode-weekcontest-327.mdx",
-    "data/blog/honeycomb-osdi23.md",
-    "data/blog/flexflow-LXC.md",
     "public/static/images/851e8a38440af465c42063e2514dd917.png",
     "public/static/images/45851ef1812fe48de16b126f55b74979.png",
     "public/static/images/37b7a7c03c8323b822120623ab06c353.png",
@@ -164,10 +176,8 @@
     "data/blog/sept-spummary.mdx",
     "data/blog/realm-14.md",
     "data/blog/race-thirty-years-ago.mdx",
-    "data/blog/paper-note-template.md",
     "data/blog/overleaf-locally.md",
     "data/blog/cs231n_note0.mdx",
-    "data/blog/birthday-22.mdx",
-    "data/blog/about-Intelligentsia.mdx"
+    "data/blog/birthday-22.mdx"
   ]
 }
