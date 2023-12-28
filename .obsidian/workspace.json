@@ -13,19 +13,21 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "data/blog/paper-note-template.md",
+                "file": "data/blog/year-summary-2022.mdx",
                 "mode": "source",
-                "source": true
+                "source": false
               }
             }
           },
           {
-            "id": "d39f46a06e31a340",
+            "id": "2411872a8a7648c4",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.5.3"
+                "file": "data/blog/year-summary-2023.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -96,6 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "data/blog/year-summary-2023.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -112,6 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "data/blog/year-summary-2023.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "data/blog/eopf-osdi23.md"
+                "file": "data/blog/year-summary-2023.md"
               }
             }
           }
@@ -153,14 +157,19 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "b534aa2eb1e0c3fd",
+  "active": "2411872a8a7648c4",
   "lastOpenFiles": [
+    "data/blog/year-summary-2022.mdx",
+    "data/blog/year-summary-2023.md",
+    "data/blog/realm-14.md",
+    "data/blog/uswitch-2023.md",
+    "data/blog/major_project_2022.mdx",
+    "data/authors/NorthSecond.mdx",
+    "data/authors/default.mdx",
+    "data/blog/paper-note-template.md",
     "data/blog/honeycomb-osdi23.md",
     "data/blog/eopf-osdi23.md",
-    "data/blog/paper-note-template.md",
-    "data/blog/year-summary-2022.mdx",
     "data/blog/flexflow-LXC.md",
-    "data/blog/uswitch-2023.md",
     "data/blog/leetcode-weekcontest-327.mdx",
     "public/static/images/851e8a38440af465c42063e2514dd917.png",
     "public/static/images/45851ef1812fe48de16b126f55b74979.png",
@@ -174,10 +183,6 @@
     "data/blog/zipper-code-readme.mdx",
     "data/blog/unity-2022.md",
     "data/blog/sept-spummary.mdx",
-    "data/blog/realm-14.md",
-    "data/blog/race-thirty-years-ago.mdx",
-    "data/blog/overleaf-locally.md",
-    "data/blog/cs231n_note0.mdx",
-    "data/blog/birthday-22.mdx"
+    "data/blog/overleaf-locally.md"
   ]
 }
