@@ -9,11 +9,11 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is hm.baidu.com;
   style-src 'self' 'unsafe-inline';
-  img-src * blob: data: feishu.cn cs231n.github.io;
-  media-src *.s3.amazonaws.com music.163.com;
+  img-src * blob: data: feishu.cn cs231n.github.io *.163.com;
+  media-src *.s3.amazonaws.com *.163.com;
   connect-src *;
   font-src 'self';
-  frame-src giscus.app *.163.com;
+  frame-src 'self' giscus.app *.163.com 'unsafe-inline' 'unsafe-eval';
 `
 
 const securityHeaders = [
