@@ -41,6 +41,7 @@ curl https://raw.githubusercontent.com/juanfont/headscale/main/config-example.ya
 update: 改了一下 ipv4 的默认网段，不然占用 CGNAT 的ipv4 网段会有一些和运营商冲突的问题（比如阿里云的镜像就不能用了）
 
 [mdx_fold open="true" title="配置文件详情"]
+
 ```yaml
 # headscale will look for a configuration file named `config.yaml` (or `config.json`) in the following order:
 #
@@ -368,6 +369,7 @@ logtail:
 # firewall devices. See https://tailscale.com/kb/1181/firewalls/ for more information.
 randomize_client_port: false
 ```
+
 [/mdx_fold]
 
 为了方便管理，这里我使用了 [gurucomputing/headscale-ui](https://github.com/gurucomputing/headscale-ui/tree/master)，在根文件夹下创建 `docker-compose.yml`，此时文件夹结构应如下图所示：
@@ -416,8 +418,10 @@ docker exec headscale \
 
 拿到 api-key 填入即可。
 
-:::note  
+:::note
+
 apikey 只会显示这一次，但是 ui 界面填入的内容只保存在该浏览器的本地缓存中，所以请妥善保管好您的 apikey，或者干脆每次申请一个新的。
+
 :::
 
 #### 租户创立
@@ -445,7 +449,7 @@ docker exec headscale \
 
 ### Windows 接入
 
-访问 `<server_url>/windows` 可以查到对应的接入方法。具体而言就是在下载好新版本的 tailscale 之后在 powershell 中运行：
+访问 `<server_url>/windows` 可以查到对应的接入方法。具体而言就是在下载好新版本的 tailscale 之后在带有管理员权限的 powershell 中运行：
 
 ```bash
 tailscale login --login-server <server_url>
@@ -466,7 +470,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 默认安装程序在国内可能有网络问题，那就也可以在 [官网](https://pkgs.tailscale.com/stable/) 下载针对不同体系结构 build 好的二进制发行文件（想从 [Github](https://github.com/tailscale/tailscale) 自己源码编译也不是不行，但是我没试过）。下载之后按照官方教程进行安装并启动`tailscaled.service`就好。之后就是登录。
 
 ```bash
-tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false
+sudo tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false
 ```
 
 之后就是和 Windows 接入一样的流程了。
@@ -483,7 +487,7 @@ sudo synopkg install {{path/to/package.spk}}
 接下来进行登录，登录和 Linux 就几乎一样了，只不过要多加一个 `--reset` 的 arg。
 
 ```bash
-tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false --reset
+sudo tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false --reset
 ```
 按照指引安装即可。
 
@@ -518,7 +522,7 @@ docker exec headscale \
 在上面各种接入方式的命令行操作末尾加一句 `--authkey <KEY>`，即可，例如此时的 Linux 接入命令就是：
 
 ```bash
-tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false --authkey <KEY>
+sudo tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=false --authkey <KEY>
 ```
 
 ## 检查网络连通性
