@@ -40,8 +40,8 @@ curl https://raw.githubusercontent.com/juanfont/headscale/main/config-example.ya
 
 update: 改了一下 ipv4 的默认网段，不然占用 CGNAT 的ipv4 网段会有一些和运营商冲突的问题（比如阿里云的镜像就不能用了）
 
-[mdx_fold open="true" title="配置文件详情"]
-
+<details>
+<summary> View config.yaml </summary>
 ```yaml
 # headscale will look for a configuration file named `config.yaml` (or `config.json`) in the following order:
 #
@@ -370,7 +370,7 @@ logtail:
 randomize_client_port: false
 ```
 
-[/mdx_fold]
+</details>
 
 为了方便管理，这里我使用了 [gurucomputing/headscale-ui](https://github.com/gurucomputing/headscale-ui/tree/master)，在根文件夹下创建 `docker-compose.yml`，此时文件夹结构应如下图所示：
 
@@ -418,11 +418,7 @@ docker exec headscale \
 
 拿到 api-key 填入即可。
 
-:::note
-
-apikey 只会显示这一次，但是 ui 界面填入的内容只保存在该浏览器的本地缓存中，所以请妥善保管好您的 apikey，或者干脆每次申请一个新的。
-
-:::
+**apikey 只会显示这一次**，但是 ui 界面填入的内容只保存在该浏览器的本地缓存中，所以请妥善保管好您的 apikey，或者干脆每次申请一个新的。
 
 #### 租户创立
 
