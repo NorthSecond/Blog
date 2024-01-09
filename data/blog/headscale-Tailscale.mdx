@@ -374,7 +374,7 @@ randomize_client_port: false
 
 为了方便管理，这里我使用了 [gurucomputing/headscale-ui](https://github.com/gurucomputing/headscale-ui/tree/master)，在根文件夹下创建 `docker-compose.yml`，此时文件夹结构应如下图所示：
 
-![](/public/static/images/Pasted%20image%2020240108114525.png)
+![](/static/images/Pasted%20image%2020240108114525.png)
 配置`docker-compose.yml` 如下：
 
 ```yml
@@ -453,7 +453,7 @@ tailscale login --login-server <server_url>
 
 按照 powershell 中给出的指示拿到 `<mkey>` 完成节点接入即可。在连接上后不要忘了在设置中取消对使用 DNS 的勾选以及选择 `run unattended` 便于远程控制。
 
-![](public/static/images/Pasted%20image%2020240109082823.png)
+![](/static/images/Pasted%20image%2020240109082823.png)
 
 ### Linux 接入
 
@@ -491,7 +491,7 @@ sudo tailscale up --login-server=<server_url> --accept-routes=true --accept-dns=
 
 在 Google Play 中安装 headscale，打开之后暂时会找不到自定义服务器的入口。这时我们不用慌，快速点击右上角的菜单展开按钮，打开收起几次之后就有了。
 
-![](public/static/images/Pasted%20image%2020240109085315.png)
+![](/static/images/Pasted%20image%2020240109085315.png)
 
 输入 `<server_url>` 后返回点击 `Sign in with other`，之后的操作都是大同小异了。
 

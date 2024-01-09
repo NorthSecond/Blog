@@ -15,7 +15,7 @@
               "state": {
                 "file": "data/blog/headscale-Tailscale.mdx",
                 "mode": "source",
-                "source": true
+                "source": false
               }
             }
           }
