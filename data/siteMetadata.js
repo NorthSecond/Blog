@@ -11,7 +11,7 @@ const siteMetadata = {
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
   mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'yangyf83@aliyun.com',
+  email: 'yangyf83@foxmail.com',
   github: 'https://github.com/NorthSecond',
   // twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com',

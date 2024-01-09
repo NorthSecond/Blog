@@ -21,6 +21,20 @@ export default function Footer() {
           <div>{` • `}</div>
           <Link href="/">{siteMetadata.title}</Link>
         </div>
+        <div className="mb-2">
+          <a
+            href="https://www.travellings.cn/go.html"
+            target="_blank"
+            rel="noopener"
+            title="开往-友链接力"
+          >
+            <img
+              src="https://cdn.jsdelivr.net/gh/travellings-link/travellings/assets/logo.gif"
+              alt="开往-友链接力"
+              width="120"
+            ></img>
+          </a>
+        </div>
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
           <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">
             Tailwind Nextjs Theme
