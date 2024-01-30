@@ -14,6 +14,11 @@ const friendsData = [
     description: '绿群大佬',
     href: 'https://xieincz.github.io/',
   },
+  {
+    name: 'hanghang214',
+    description: '绿群大佬',
+    href: 'https://hanghang214.cn/',
+  },
 ]
 
 export default friendsData
