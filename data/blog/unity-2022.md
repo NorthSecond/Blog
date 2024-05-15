@@ -2,7 +2,11 @@
 type: Blog
 title: "[Paper Note] Unity: Accelerating DNN Training Through Joint Optimization of Algebraic Transformations and Parallelization"
 date: 2023-10-30 16:00:00 +0800
-tags: [paper, Notes, system, HPC]
+tags:
+  - paper
+  - Notes
+  - system
+  - HPC
 summary: 16th USENIX Symposium on Operating Systems Design and Implementation(OSDI 2022)
 ---
 
