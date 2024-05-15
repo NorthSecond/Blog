@@ -6,6 +6,8 @@ summary: "SC '23: Proceedings of the International Conference for High Performan
 tags:
   - paper
   - Notes
+  - system
+  - HPC
 ---
 ## Basic Information
 
@@ -111,7 +113,7 @@ AutoMap searches to find a mapping function with the signature $tasks \times col
 - 在算法过程中维护任务的依赖图 $G$
 	- 对于任务的集合，构建图 $C = (V, E)$,对于每一个集合$c \in V$，有 $(c_1, c_2)\in E$ iff $c_1 \cap c_2 \neq 0$  
 		- The weight of the edge is $|c_1 \cap c_2|$.
-	- ![](public/static/images/f87b34ac4b023fada882679815de23b7.png)
+	- ![](/static/images/f87b34ac4b023fada882679815de23b7.png)
 	- The second constraint is the co-location constraint on overlapping collections to minimize data movement, described in Algorithm 2.
 	- ![](/static/images/73ac461b979b2574d993363cb985c5e2.png)
 

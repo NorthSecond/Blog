@@ -18,30 +18,6 @@
                 "source": false
               }
             }
-          },
-          {
-            "id": "5d66149e025392c5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "data/blog/realm-14.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "1f41fef1a0afa176",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "data/blog/flexflow-LXC.md",
-                "mode": "source",
-                "source": false
-              }
-            }
           }
         ]
       }
@@ -72,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "![](public/static/images/441675d44452fac0c1c2649ead50652d.png)",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -89,8 +65,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -169,13 +144,13 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "5c98d1d9598a97e5",
+  "active": "7f0489a9899869fb",
   "lastOpenFiles": [
-    "data/blog/flexflow-LXC.md",
+    "data/blog/realm-14.md",
     "data/blog/automap-sc23.md",
+    "data/blog/flexflow-LXC.md",
     "data/blog/headscale-Tailscale.mdx",
     "data/blog/honeycomb-osdi23.md",
-    "data/blog/realm-14.md",
     "data/blog/year-summary-2023.md",
     "data/blog/about-baoyan.mdx",
     "data/blog/sept-spummary.mdx",
