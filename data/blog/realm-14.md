@@ -1,9 +1,13 @@
 ---
 type: Blog
 title: "[Paper Note] Realm: An event-based low-level runtime for distributed memory architectures"
-date: 2023-12-14 20:00:00 +0800
+date: 2024-12-14 20:00:00 +0800
 summary: 2014 23rd International Conference on Parallel Architecture and Compilation Techniques (PACT 2014)
-tags: ['paper', 'Notes', 'system', 'HPC']
+tags:
+  - paper
+  - Notes
+  - system
+  - HPC
 ---
 
 ## Basic Information
