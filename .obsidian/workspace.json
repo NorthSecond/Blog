@@ -1,39 +1,52 @@
 {
   "main": {
-    "id": "6b4a0e7ce80f805d",
+    "id": "ceb7a87e39ebf39d",
     "type": "split",
     "children": [
       {
-        "id": "bb3eada98a0cd21c",
+        "id": "73da35c507846693",
         "type": "tabs",
         "children": [
           {
-            "id": "7f0489a9899869fb",
+            "id": "7443cab90c5ec8ed",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "data/blog/automap-sc23.md",
+                "file": "data/blog/honeycomb-osdi23.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "89586945dbf8b274",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "data/blog/twopath-osdi24.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
   },
   "left": {
-    "id": "ef7f82632ef5f188",
+    "id": "df6f60a7f1372d8b",
     "type": "split",
     "children": [
       {
-        "id": "763b94b6aee2f299",
+        "id": "4b7e0065f7d98748",
         "type": "tabs",
         "children": [
           {
-            "id": "b534aa2eb1e0c3fd",
+            "id": "5c28db104fffc6d3",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -43,7 +56,7 @@
             }
           },
           {
-            "id": "5c98d1d9598a97e5",
+            "id": "6934609c06214e97",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -58,7 +71,7 @@
             }
           },
           {
-            "id": "9d25dd33266dd7a1",
+            "id": "94b66221fb1d6b96",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -72,20 +85,20 @@
     "width": 300
   },
   "right": {
-    "id": "f1b939f19b1d1a85",
+    "id": "257aa3520e18180f",
     "type": "split",
     "children": [
       {
-        "id": "fae1069c3618774f",
+        "id": "7d25eeb9c96d2a2b",
         "type": "tabs",
         "children": [
           {
-            "id": "ce716510f320296d",
+            "id": "279d64cf13b3860c",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "data/blog/automap-sc23.md",
+                "file": "data/blog/twopath-osdi24.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,19 +110,19 @@
             }
           },
           {
-            "id": "4f8153193b6a92f7",
+            "id": "1f15716300be97c1",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "data/blog/automap-sc23.md",
+                "file": "data/blog/twopath-osdi24.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
           },
           {
-            "id": "eff02413b1fa31f1",
+            "id": "074120bd9e48332f",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -120,12 +133,12 @@
             }
           },
           {
-            "id": "672272af3894c7ef",
+            "id": "6802d1b0886f0acb",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "data/blog/automap-sc23.md"
+                "file": "data/blog/twopath-osdi24.md"
               }
             }
           }
@@ -133,7 +146,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
+    "width": 300,
     "collapsed": true
   },
   "left-ribbon": {
@@ -144,38 +157,20 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "7f0489a9899869fb",
+  "active": "89586945dbf8b274",
   "lastOpenFiles": [
-    "data/blog/realm-14.md",
-    "data/blog/automap-sc23.md",
-    "data/blog/flexflow-LXC.md",
-    "data/blog/headscale-Tailscale.mdx",
+    "public/static/images/Pasted image 20240819193331.png",
+    "data/blog/paper-note-template.md",
+    "data/blog/twopath-osdi24.md",
     "data/blog/honeycomb-osdi23.md",
-    "data/blog/year-summary-2023.md",
+    "data/blog/zellij-config.mdx",
+    "data/blog/zipper-code-readme.mdx",
     "data/blog/about-baoyan.mdx",
     "data/blog/sept-spummary.mdx",
-    "public/static/images/441675d44452fac0c1c2649ead50652d.png",
-    "public/static/images/1fef815870f7a70cae13683bfc1d5f7c.png",
-    "public/static/images/f5767260807ab7d4fb102f6760a1e38e.png",
-    "public/static/images/e59100189dc65e2cda7f34767fd39ab6.png",
-    "public/static/images/73ac461b979b2574d993363cb985c5e2.png",
-    "public/static/images/f87b34ac4b023fada882679815de23b7.png",
-    "public/static/images/275e32379d421ab162d6e08e115b3116.png",
-    "public/static/images/0882b8d714164c8ecca5245be06924e4.png",
-    "public/static/images/5bb1354807abb61805bb654552cbc176.png",
-    "data/blog/unity-2022.md",
-    "data/blog/zellij-config.mdx",
-    "data/blog/paper-note-template.md",
-    "data/blog/blog-initialization.mdx",
-    "data/blog/headscale-Tailscale.md",
-    "public/static/images/Pasted image 20240109085315.png",
-    "data/blog/overleaf-locally.md",
-    "data/blog/zipper-code-readme.mdx",
     "data/blog/uswitch-2023.md",
-    "data/blog/eopf-osdi23.md",
     "data/blog/year-summary-2022.mdx",
-    "data/blog/leetcode-weekcontest-327.mdx",
-    "data/blog/CSP-30th.mdx",
-    "data/blog/algorithm-major.mdx"
+    "data/blog/year-summary-2023.md",
+    "data/blog/ezconnect-docker.md",
+    "data/blog/flexflow-LXC.md"
   ]
 }
