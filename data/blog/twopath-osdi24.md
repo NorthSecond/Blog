@@ -1,7 +1,7 @@
 ---
 type: Blog
 title: "[Paper Note]  A Tale of Two Paths: Toward a Hybrid Data Plane for Efficient Far-Memory Applications"
-date: 2023-07-16 19:00:00 +0800
+date: 2024-07-16 19:00:00 +0800
 summary: OSDI 2024
 tags:
   - paper

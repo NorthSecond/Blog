@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "data/blog/realm-14.md",
+                "file": "data/blog/twopath-osdi24.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "data/blog/realm-14.md",
+                "file": "data/blog/twopath-osdi24.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "data/blog/realm-14.md",
+                "file": "data/blog/twopath-osdi24.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "data/blog/realm-14.md"
+                "file": "data/blog/twopath-osdi24.md"
               }
             }
           }
@@ -159,6 +159,7 @@
   },
   "active": "89586945dbf8b274",
   "lastOpenFiles": [
+    "data/blog/realm-14.md",
     "data/blog/automap-sc23.md",
     "data/blog/twopath-osdi24.md",
     "data/blog/unity-2022.md",
