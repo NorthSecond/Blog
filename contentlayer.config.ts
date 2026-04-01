@@ -157,7 +157,7 @@ export default makeSource({
       allBlogs = importedData.allBlogs
     } catch (error) {
       console.warn(
-        `Contentlayer importData failed, falling back to generated Blog index JSON at ${generatedBlogIndexPath}.`,
+        `Contentlayer importData failed (often caused by runtime incompatibility with JSON import assertions); falling back to generated Blog index JSON at ${generatedBlogIndexPath}.`,
         error
       )
       allBlogs = JSON.parse(readFileSync(generatedBlogIndexPath, 'utf8'))
