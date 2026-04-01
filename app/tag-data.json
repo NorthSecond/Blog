@@ -1,13 +1,1 @@
-{
-    "paper": 5,
-    "system": 4,
-    "security": 1,
-    "deep-learning": 5,
-    "HPC": 3,
-    "Codes": 4,
-    "notes": 13,
-    "随笔": 7,
-    "课程内容": 3,
-    "文摘": 2,
-    "Algorithm": 4
-}
+{"codes":5,"algorithm":4,"文摘":2,"随笔":7,"总结":5,"课程内容":3,"paper":7,"notes":18,"system":6,"hpc":5,"cs231n":4,"deep-learning":4,"security":1}

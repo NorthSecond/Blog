@@ -24,6 +24,7 @@ import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
+const generatedBlogIndexPath = './.contentlayer/generated/Blog/_index.json'
 
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
@@ -152,9 +153,14 @@ export default makeSource({
   onSuccess: async (importData) => {
     let allBlogs
     try {
-      ;({ allBlogs } = await importData())
-    } catch {
-      allBlogs = JSON.parse(readFileSync('./.contentlayer/generated/Blog/_index.json', 'utf8'))
+      const importedData = await importData()
+      allBlogs = importedData.allBlogs
+    } catch (error) {
+      console.warn(
+        `Contentlayer importData failed, falling back to generated Blog index JSON at ${generatedBlogIndexPath}.`,
+        error
+      )
+      allBlogs = JSON.parse(readFileSync(generatedBlogIndexPath, 'utf8'))
     }
     createTagCount(allBlogs)
     createSearchIndex(allBlogs)
