@@ -1,5 +1,5 @@
 import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer/source-files'
-import { writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import readingTime from 'reading-time'
 import GithubSlugger from 'github-slugger'
 import path from 'path'
@@ -24,6 +24,7 @@ import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
+const generatedBlogIndexPath = './.contentlayer/generated/Blog/_index.json'
 
 const computedFields: ComputedFields = {
   readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
@@ -150,7 +151,17 @@ export default makeSource({
     ],
   },
   onSuccess: async (importData) => {
-    const { allBlogs } = await importData()
+    let allBlogs
+    try {
+      const importedData = await importData()
+      allBlogs = importedData.allBlogs
+    } catch (error) {
+      console.warn(
+        `Contentlayer importData failed (often caused by runtime incompatibility with JSON import assertions); falling back to generated Blog index JSON at ${generatedBlogIndexPath}.`,
+        error
+      )
+      allBlogs = JSON.parse(readFileSync(generatedBlogIndexPath, 'utf8'))
+    }
     createTagCount(allBlogs)
     createSearchIndex(allBlogs)
   },
